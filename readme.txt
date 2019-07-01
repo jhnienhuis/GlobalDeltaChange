@@ -35,6 +35,10 @@ source: https://lpdaac.usgs.gov/products/srtmgl1v003/
 
 (6) run get_Qtide
 
-(7) run get_aquamonitor_data
+(7a) run get_aquamonitor_data
+
+(7b) run https://code.earthengine.google.com/451465dc579747ae0b39b5f2f8ad1b12
+
+(7c) run get_aquamonitor_data
 
 (8) run create_netcdf
