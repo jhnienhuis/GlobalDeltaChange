@@ -47,6 +47,8 @@ upstreamLat = BasinLatSm;
 %search parameters
 dis = [sqrt(2) 1 sqrt(2); 1 0 1; sqrt(2) 1 sqrt(2)];
 len = zeros(length(upstreamLat),ele_max);
+len_lat = zeros(length(upstreamLat),ele_max);
+len_lon = zeros(length(upstreamLat),ele_max);
 
 for ii=1:length(upstreamLat),
     
@@ -66,8 +68,14 @@ for ii=1:length(upstreamLat),
     BasinLat_acc(ii) = upstreamLat(ii);
     BasinLon_acc(ii) = upstreamLon(ii);
     
-    %if nothing found, return len==-1;
-    if a(upstreamLat(ii),upstreamLon(ii))<(0.5*BasinAreaCell(ii)), len(ii,:) = nan; continue, end
+    %if nothing found, return len==-1; this happens most often if the
+    %channel has been found already.
+    if a(upstreamLat(ii),upstreamLon(ii))<(0.5*BasinAreaCell(ii)), 
+        len(ii,:) = nan;
+        len_lat(ii,:) = nan;
+        len_lon(ii,:) = nan;
+        continue, 
+    end
     
     %else, start search up to elevation = 15m
     k=0;
@@ -81,7 +89,9 @@ for ii=1:length(upstreamLat),
         [maxa,idxa,idxb] = max2d(a(min(x,max(1,upstreamLat(ii)+(-1:1))),min(y,max(1,upstreamLon(ii)+(-1:1)))));
         
         %if less than 10 drainage cells, stop
-        if maxa<10 || k==1000, break, end
+        if maxa<10 || k==1000, 
+            break, 
+        end
         
         %set cell to new maximum
         upstreamLat(ii) = upstreamLat(ii)-2+idxa;
@@ -90,7 +100,8 @@ for ii=1:length(upstreamLat),
         %calculate elevation of cell
         ele = cz2(upstreamLat(ii),upstreamLon(ii))+1;
         len(ii,ele:end) = len(ii,ele:end)+dis(idxa,idxb);
-        
+        len_lat(ii,ele:end) = upstreamLat(ii);
+        len_lon(ii,ele:end) = upstreamLon(ii);
     end
     
 end
@@ -118,6 +129,13 @@ channel_slope = bsxfun(@rdivide,[1 1:(ele_max-1)],channel_len);
 channel_slope(channel_slope>100) = 1e-3;
 channel_slope = mean(channel_slope(:,1:20),2);
 
+len_lat(len_lat==0) = nan;
+len_lon(len_lon==0) = nan;
+
+channel_len_lat = (ulY-len_lat)./res-90;
+channel_len_lon = (ulX+len_lon)./res;
+
+
 maxa = max(channel_len,[],2);
 ChannelSlope = zeros(size(maxa));
 for ii=1:length(channel_len),
@@ -132,6 +150,6 @@ end
 BasinLat_acc = (ulY - BasinLat_acc)/res;
 BasinLon_acc = (BasinLon_acc + ulX)/res;
 
-save([dropbox filesep 'WorldDeltas'  filesep 'scripts' filesep 'RiverMouth' continents{jj} '.mat'],'channel_slope','ChannelSlope','BasinLat_acc','BasinLon_acc','-append')
+save([dropbox filesep 'WorldDeltas'  filesep 'scripts' filesep 'RiverMouth' continents{jj} '.mat'],'channel_slope','ChannelSlope','channel_len_lat','channel_len_lon','channel_len','-append')
 
 end

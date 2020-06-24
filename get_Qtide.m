@@ -1,7 +1,7 @@
 %% Get tidal fluxes
 load([dropbox filesep 'WorldDeltas' filesep 'scripts' filesep 'GlobalDeltaData.mat'])
 
-direc = 'D:\GlobalDatasets\Tides\';
+direc = 'D:\OneDrive - Universiteit Utrecht\Tides\';
 lat_tide = ncread([direc 'hf.m2_tpxo8_atlas_30c_v1.nc'],'lat_z');
 lon_tide = ncread([direc 'hf.m2_tpxo8_atlas_30c_v1.nc'],'lon_z');
 
@@ -15,8 +15,10 @@ p1 = int32(abs(single(ncread([direc 'hf.p1_tpxo8_atlas_30c_v1.nc'],'hRe'))+1i*si
 q1 = int32(abs(single(ncread([direc 'hf.q1_tpxo8_atlas_30c_v1.nc'],'hRe'))+1i*single(ncread([direc 'hf.q1_tpxo8_atlas_30c_v1.nc'],'hIm'))));
 n2 = int32(abs(single(ncread([direc 'hf.n2_tpxo8_atlas_30c_v1.nc'],'hRe'))+1i*single(ncread([direc 'hf.n2_tpxo8_atlas_30c_v1.nc'],'hIm'))));
 
+
+
 %hamax = reshape(max([m2(:),s2(:),k1(:),o1(:)],[],2),size(s2));
-hamax = (m2+m4+s2+k1+k2+o1+p1+q1+n2)/1.3;
+hamax = (m2+m4+s2+k1+k2+o1+p1+q1+n2)/2;
 
 %clearvars m2 m4 s2 k1 k2 o1 p1 q1 n2
 
@@ -82,8 +84,11 @@ w_upstream = 10*Discharge_prist.^0.5;
 d_upstream = 0.3*Discharge_prist.^0.35;
 beta = w_upstream./d_upstream;
 t_length = max(2*tide_a,d_upstream)./ChannelSlope;
+t_length = min(t_length,pi./tide_omega.*sqrt(d_upstream.*10)); %put limiter on tidal intrusion distance based on tidal wave celerity
 
-Discharge_tide = double(tide_omega.^2.*tide_a.^2.*t_length.^2.*beta./(2*pi*sqrt(0.2*1e-5)*1.65*50)); %Qtide in m3/s of water
+k = tide_omega./(pi*sqrt(0.2*1e-4)*1.65*55);
+
+Discharge_tide = double(0.5*tide_omega.*k.*tide_a.^2.*t_length.^2.*beta.*(1+2.*ChannelSlope./(k.*tide_a))); %Qtide in m3/s of water %corrected!
 QTide = Discharge_tide.*min(1,QRiver_prist./Discharge_prist); %Qtide in kg/s of sediment assuming same sediment concentration
 TidalAmp = tide_a;
 

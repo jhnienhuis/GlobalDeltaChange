@@ -1,6 +1,6 @@
 %% get QWave
 %load global map of directional wave energy spectra
-load([dropbox filesep 'WorldDeltas\QWave\DirMapGlo.mat'])
+load(['D:\OneDrive - Universiteit Utrecht\Waves\Software\DirMapGlo.mat'])
 hs = flipud(hs); hs(hs<0.01) = nan;
 energy = flipud(energy);
 tp = flipud(tp);
