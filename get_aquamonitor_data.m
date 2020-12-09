@@ -4,8 +4,7 @@ res=1;
 remfun = @(lon) (rem(res*360-1+lon,res*360)+1);
 
 %create buffer per delta
-DeltaRadius = max(2,sqrt(1.07.*Discharge_prist.^0.7.*QRiver_prist.^0.45/pi))./111.*(cos(deg2rad(MouthLat)));
-DeltaBuffer = 1000+(DeltaRadius*10000);
+DeltaRadius = max(2,sqrt(1.07.*Discharge_prist.^0.7.*QRiver_prist.^0.45/pi))./111; %.*(cos(deg2rad(MouthLat)));
 
 %load shoreline
 shore = shaperead('D:\OneDrive - Universiteit Utrecht\WorldCoastline\osm_coastline\coastline_z8.shp');
@@ -60,22 +59,27 @@ end
 %make shape file
 %improve BasinID(!) 
 BasinID = (10*BasinID+Continent);
+
+DeltaRadius = sqrt(1.07.*Discharge_prist.^0.7.*QRiver_prist.^0.45/pi/100);
+DeltaBuffer = 1000+(DeltaRadius*1000);
+
 rate = mapshape(delta_shoreline_lon,delta_shoreline_lat,'BasinID',(BasinID),'Buffer',(DeltaBuffer));
 
 shapewrite(rate,'GlobalDeltaShorelineData.shp')
 
 %% put results back into mat file
-load([dropbox filesep 'WorldDeltas' filesep 'GlobalDeltaData.mat']);
+f = [dropbox filesep 'WorldDeltas' filesep 'scripts' filesep];
+load([f 'GlobalDeltaData.mat']);
 
 %file exported from earth engine
-fileID = fopen('D:\Dropbox\WorldDeltas\EarthEngine\GlobalDeltaChange6.csv','r');
+fileID = fopen([f 'GlobalDeltaChange.csv'],'r');
 data = textscan(fileID, '%q%f%f%f%f%f%f%f%f%q%[^\n\r]', 'Delimiter', ',', 'HeaderLines' ,1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
 fclose(fileID);
 data = cell2mat(data(2:9)); %basin ID, deltaArea, change, deposition, erosion
 data_aqua = data(:,[4 6 8])/28; %aquamonitor change deposition erosion per year
 data_pekel = data(:,[3 5 7])/31; data_pekel(:,3) = data_pekel(:,3).*-1;
 
-[~,idx] = ismember(BasinID,data(:,1));
+[~,idx] = ismember(BasinID2,data(:,1));
 idx(idx==0) = 2;
 
 %put in structure
@@ -88,7 +92,7 @@ ee.dep_aqua = data_aqua(idx,2);
 ee.ero_aqua = data_aqua(idx,3);
 
 %add to .mat file
-save('GlobalDeltaData.mat','ee','-append');
+save([f 'GlobalDeltaData.mat'],'ee','-append');
 %% Delta Earth Engine shape file from NOAA maps
 res=1;
 remfun = @(lon) (rem(res*360-1+lon,res*360)+1);
