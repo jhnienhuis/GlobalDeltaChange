@@ -68,7 +68,7 @@ shapewrite(rate,'GlobalDeltaShorelineData.shp')
 load([dropbox filesep 'WorldDeltas' filesep 'GlobalDeltaData.mat']);
 
 %file exported from earth engine
-fileID = fopen('D:\Dropbox\WorldDeltas\EarthEngine\GlobalDeltaChange.csv','r');
+fileID = fopen('D:\Dropbox\WorldDeltas\EarthEngine\GlobalDeltaChange6.csv','r');
 data = textscan(fileID, '%q%f%f%f%f%f%f%f%f%q%[^\n\r]', 'Delimiter', ',', 'HeaderLines' ,1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
 fclose(fileID);
 data = cell2mat(data(2:9)); %basin ID, deltaArea, change, deposition, erosion
