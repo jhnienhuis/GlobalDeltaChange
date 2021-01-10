@@ -1,5 +1,7 @@
 (c) Jaap Nienhuis, Utrecht University, 2019
 
+!!this describes the code. Data can be found here as data files: http://dx.doi.org/10.17605/OSF.IO/S28QB and here through an interactive map: https://jhnienhuis.users.earthengine.app/view/globaldelta !!
+
 This readme explains how to generate a global delta dataset including relevant river/wave/tidal parameters that can be used to predict delta morphology.
 
 Required datasets:
