@@ -22,18 +22,18 @@ riverLat = arrayfun(@(x) (x.Lat(end-1)),rivers);
 riverLon = arrayfun(@(x) (x.Lon(end-1)),rivers);
 riverLon = rem(riverLon+360,360);
 
-riverID{ii} = [rivers.HYRIV_ID];
+RiverID{ii} = [rivers.HYRIV_ID];
 riverBasID{ii} = [rivers.HYBAS_L12];
 riverArea{ii} = [rivers.UPLAND_SKM];
 riverboth{ii} = rot90(riverLon+1i*riverLat);
 end
-riverID = int64([riverID{:}]);
+RiverID = int64([RiverID{:}]);
 riverBasID = int64([riverBasID{:}]);
 riverArea = [riverArea{:}];
 riverboth = [riverboth{:}];
 
 %% load all deltas
-load([dropbox filesep 'WorldDeltas' filesep 'scripts' filesep 'GlobalDeltaData.mat'])
+load(['D:\Dropbox\github\GlobalDeltaChange' filesep 'GlobalDeltaData.mat'])
 MouthLon = rem(MouthLon+360,360);
 mouthboth = MouthLon+1i*MouthLat;
 %do fancy minimum
@@ -54,13 +54,15 @@ plot(riverBoth(idx),'d','MarkerSize',15);
 %}
 %% match
 Basins = riverBasID(idx);
+RiverID = RiverID(idx);
 RiverBasinArea = riverArea(idx);
 riverboth = riverboth(idx);
 %link river mouth to basin, seems correct?
 %plot([real(riverboth)' real(mouthboth)]',[imag(riverboth)' imag(mouthboth)]','-o')
-[~,ida] = ismember(Basins,mainbasid(:,1));
+[idb,ida] = ismember(Basins,mainbasid(:,1));
 
 BasinID_ATLAS = mainbasid(ida,2);
+RiverID_ATLAS = RiverID(idb);
 
 basins = shaperead('D:\OneDrive - Universiteit Utrecht\HydroSheds\BasinATLAS_Data_v10_shp\BasinATLAS_v10_shp\BasinATLAS_v10_lev12_mainbas4','UseGeoCoords',true);
 basins_add = shaperead('D:\OneDrive - Universiteit Utrecht\HydroSheds\BasinATLAS_Data_v10_shp\BasinATLAS_v10_shp\BasinATLAS_v10_lev12_mainbas4add','UseGeoCoords',true);
@@ -70,7 +72,6 @@ basins = [basins; basins_add(idx)];
 main_bas = int64([basins.MAIN_BAS]);
 
 [~,ida] = ismember(BasinID_ATLAS,main_bas);
-
 
 %sum(ismember(BasinID_ATLAS2,main_bas))
 %plot(mouthboth(Continent==8),'or'), hold on
@@ -112,4 +113,4 @@ b.Geometry = 'point';
 
 shapewrite(b,'GlobalDeltaMouth')
 
-save GlobalDeltaData -append BasinID_ATLAS 
+save GlobalDeltaData -append BasinID_ATLAS RiverID_ATLAS

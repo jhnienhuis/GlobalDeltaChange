@@ -45,7 +45,7 @@ save GlobalNames sub_name maj_name
 %%
 clr
 load GlobalNames sub_name maj_name delta_name_id delta_name_continent delta_name
-out = load('D:\Dropbox\WorldDeltas\scripts\GlobalDeltaData.mat');
+out = load('D:\Dropbox\github\GlobalDeltaChange\GlobalDeltaData.mat');
 maj_name = string(maj_name);
 sub_name = string(sub_name);
 
@@ -95,6 +95,6 @@ out.delta_name(10749) = 'Colville';
 
 t = table(out.delta_name,out.BasinArea,int64(out.BasinID2));
 t = sortrows(t,2,'descend');
-t(1:100,:)
+t(1:100,:);
 
 save GlobalDeltaData -struct out
