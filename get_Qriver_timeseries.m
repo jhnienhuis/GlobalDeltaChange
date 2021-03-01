@@ -1,4 +1,4 @@
-function [qs_day, discharge_day,num_day_50pct] = get_qs_timeseries(rm_lat,rm_lon,basinarea)
+function [sed_series,discharge_series,t] = get_Qriver_timeseries(rm_lat,rm_lon,basinarea)
 
 rm_lon(rm_lon>180) = rm_lon(rm_lon>180)-360;
 %
@@ -32,9 +32,9 @@ t = d.t;
 t_day = int64(t-datenum(yr_t,1,1))+1;
 t_day(t_day>366) = 366;
 
-qs_day = double(accumarray(t_day,sed_series,[366 1],@mean));
-discharge_day = double(accumarray(t_day,discharge_series,[366 1],@mean));
+%qs_day = double(accumarray(t_day,sed_series,[366 1],@mean));
+%discharge_day = double(accumarray(t_day,discharge_series,[366 1],@mean));
+%num_day_50pct = find(cumsum(sort(qs_day,'descend'))>(0.5*sum(qs_day)),1);
+%if isempty(num_day_50pct), num_day_50pct = nan; end
 
-num_day_50pct = find(cumsum(sort(qs_day,'descend'))>(0.5*sum(qs_day)),1);
-if isempty(num_day_50pct), num_day_50pct = nan; end
 end
