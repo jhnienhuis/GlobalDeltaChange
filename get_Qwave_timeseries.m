@@ -1,4 +1,4 @@
-function [QWave_day, energy_day,num_day_50pct] = get_hs_timeseries(wave_lat,wave_lon)
+function [QWave_day, energy_day,num_day_50pct] = get_Qwave_timeseries(wave_lat,wave_lon)
 d = load('D:\OneDrive - Universiteit Utrecht\Waves\Software\DirMapCoast.mat','grd_lon','grd_lat','hs');
 
 idx = find(abs(wave_lat-d.grd_lat)<1.5 & abs(wave_lon-d.grd_lon)<1.5);

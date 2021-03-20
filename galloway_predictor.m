@@ -1,17 +1,30 @@
+function [Qwave,Qtide,Qriver,shoreline_angle,w_upstream,w_downstream] = galloway_predictor(hs,a0,Qriver,discharge);
+
+
 %% input
-hs = 1.5; %significant wave height m
+%hs = 1.5; %significant wave height m
 tp = 5; %wave period s
-wdir = [-45 -30 30 45]; %wave approach angles (deg)
-rel_contrib = [300 800 250 250]; %relative contribution of waves
+wdir = [0]; %wave approach angles (deg)
+rel_contrib = [1]; %relative contribution of waves
 
-discharge = 1000; %river discharge m3s-1
+%discharge = 1000; %river discharge m3s-1
 
-a0 = 1.5; %tidal amplitude m
+%a0 = 1.5; %tidal amplitude m
 omega0 = 1.4e-4; %tidal frequency in rad/s (semidiurnal = 1.4e-4)
 rel_dens = 1.65; %immersed density
 d50 = 1e-4; %grain size in m
 g = 9.81; %gravity
 chezy = 55; %roughness
+
+%% qriver
+%the fluvial sediment flux. try to estimate the fraction that is retained
+%nearshore. In the 2015 geology paper we simply used the bedload fraction.
+%In the 2020 nature paper we used bedload and suspended load because we
+%included tides and because bedload is not available at a global scale. 
+
+%probably best to simply use sus+bed load flux, and to get it directly from
+%the delft3d simulation. 
+%Qriver = 100; %kg/s
 
 %% qwave
 energy = zeros(180,1); %array of wave energy approach angle divided over 180 approach angles (i.e. left to right looking offshore)
@@ -25,15 +38,7 @@ sedtrans = 2650 * (1-0.4) * k_wave .*  (cos(AngArray).^1.2) .* sin(AngArray);
 sedconv = conv(fliplr(energy),sedtrans,'same'); % sedconv in kg/s
 Qwave = (max(sedconv)-min(sedconv)); %maximum potential flux away from the river mouth
 
-%% qriver
-%the fluvial sediment flux. try to estimate the fraction that is retained
-%nearshore. In the 2015 geology paper we simply used the bedload fraction.
-%In the 2020 nature paper we used bedload and suspended load because we
-%included tides and because bedload is not available at a global scale. 
 
-%probably best to simply use sus+bed load flux, and to get it directly from
-%the delft3d simulation. 
-Qriver = 1000; %kg/s
 %% qtide
 %see also this table that is a supplementary table for the 2018 GRL paper 
 %https://www.dropbox.com/s/uk94kkqcb1vnbbo/Nienhuis_TidalDeltas_S1_New.xlsx?dl=0
@@ -54,9 +59,9 @@ d_upstream = (cf*(discharge/w_upstream)^2/g/slope)^(1/3); %water depth at bankfu
 beta = w_upstream/d_upstream; %channel_aspect_ratio
 
 k_tide = omega0/(sqrt(d50/0.2)*rel_dens*chezy*pi); %cross-sectional area relationship k, see nienhuis GRL 2018
-length = d_upstream / slope; %tidal intrusion length estimate (m)
+d_length = d_upstream / slope; %tidal intrusion length estimate (m)
 
-Qtide_w = a0^2*k_tide*length^2*beta*omega0*0.5+omega0*a0*length*w_upstream; %qtide in water discharge m3/s
+Qtide_w = a0^2*k_tide*d_length^2*beta*omega0*0.5+omega0*a0*d_length*w_upstream; %qtide in water discharge m3/s
 Qtide = Qtide_w*Qriver / discharge; %qtide in kg/s assuming sed concentration of tidal transport = sed concentration of river
 
 %% combination:
@@ -64,11 +69,11 @@ Qtide = Qtide_w*Qriver / discharge; %qtide in kg/s assuming sed concentration of
 R = Qriver / Qwave; %R>1 is river dominated, R<1 is wave-dominated
 T = Qtide / Qriver; %T<1 is river dominated, T>1 is tide-dominated
 
-ternplot(Qtide,Qriver,Qwave,'scatter','filled')
+%ternplot(Qtide,Qriver,Qwave,'scatter','filled')
 
 %% morphologic prediction
 %river mouth width in m (needs small correction if there are multiple river mouths, see GRL 2018
-w_downstream = (a0*k_tide*length*beta+w_upstream) 
+w_downstream = (a0*k_tide*d_length*beta)+w_upstream; 
 
 %shoreline angle (deg) compared to reference shoreline assuming a balance
 %between Qriver and actual (not potential!) wave-driven transport
@@ -92,4 +97,4 @@ else,
     shoreline_angle = nan; %river dominated deltas have no characteristic shoreline angle at the river mouth
 end
 
-shoreline_angle
+shoreline_angle = mean(shoreline_angle);
