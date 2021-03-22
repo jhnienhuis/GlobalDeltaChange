@@ -69,14 +69,14 @@ rm = rm .* int32(imregionalmax(rm)); %ocean emptying points that are regional ma
 [rmlat,rmlon] = find(rm);
 
 %convert to actual lat/lon
-MouthLat = lat_vec(rmlat);
-MouthLon = rem(lon_vec(rmlon),360);
+MouthLat_c = lat_vec(rmlat);
+MouthLon_c = rem(lon_vec(rmlon),360);
 
 %turn into linear vector
-mouth_both = int32((res*MouthLon) + 1i*res*(90+MouthLat));
+mouth_both = int32((res*MouthLon_c) + 1i*res*(90+MouthLat_c));
 
 %get basin area for all river mouths
-BasinArea = a(sub2ind(size(a),rmlat,rmlon))'; %km2
+BasinArea_c = a(sub2ind(size(a),rmlat,rmlon))'; %km2
 
 disp(['River Mouths found: ' num2str(length(mouth_both))])
 clearvars a rm
@@ -103,28 +103,28 @@ end
 
 disp('Matching basins...')
 %first do match, then coastal check!
-BasinID = zeros(size(MouthLat));
-BasinAreaBAS = zeros(size(MouthLat));
+BasinID_c = zeros(size(MouthLat_c));
+BasinAreaBAS_c = zeros(size(MouthLat_c));
 
 [a,idx] = ismember(mouth_both,int32(BAS_Both));
-BasinAreaBAS(a) = BAS_AREA_V(idx(idx>0));
+BasinAreaBAS_c(a) = BAS_AREA_V(idx(idx>0));
 
-BasinID(a) = BAS_ID_V(idx(idx>0));
+BasinID_c(a) = BAS_ID_V(idx(idx>0));
 
-BasinID(abs(log10(single(BasinAreaBAS))-log10(single(BasinArea)))>0.3) = 0;
-BAS_Both(ismember(BAS_ID_V,BasinID)) = nan;
+BasinID_c(abs(log10(single(BasinAreaBAS_c))-log10(single(BasinArea_c)))>0.3) = 0;
+BAS_Both(ismember(BAS_ID_V,BasinID_c)) = nan;
 %do combination of minimum distance and equal drainage area
 
-for ii=1:length(BasinID)
-    if BasinID(ii)>0,continue, end
+for ii=1:length(BasinID_c)
+    if BasinID_c(ii)>0,continue, end
     
-    AreaDiff = abs(log10(single(BAS_AREA_V))-log10(single(BasinArea(ii))))<0.4;
+    AreaDiff = abs(log10(single(BAS_AREA_V))-log10(single(BasinArea_c(ii))))<0.4;
 
     [a,idx] = min(abs(single(mouth_both(ii))-BAS_Both(AreaDiff)));
     idx = find(cumsum(AreaDiff)==idx);
-    if isempty(a) || a>10, BasinAreaBAS(ii) = nan; continue, end 
-    BasinID(ii) = BAS_ID_V(idx);
-    BasinAreaBAS(ii) = BAS_AREA_V(idx);
+    if isempty(a) || a>10, BasinAreaBAS_c(ii) = nan; continue, end 
+    BasinID_c(ii) = BAS_ID_V(idx);
+    BasinAreaBAS_c(ii) = BAS_AREA_V(idx);
     BAS_Both(BAS_ID_V==BAS_ID_V(idx)) = nan;
 end
 
@@ -133,13 +133,13 @@ remnan = ~isnan(BAS_X);
 czbasins = accumarray(single(BAS_ID_V(remnan))',cz(sub2ind(size(cz),BAS_Y(remnan),BAS_X(remnan))));
 
 %find if any basins have no non-coastal cells
-idx = (~ismember(BasinID,find(czbasins==0)) | BasinArea > 1000) & BasinID>0;
+idx = (~ismember(BasinID_c,find(czbasins==0)) | BasinArea_c > 1000) & BasinID_c>0;
 
 disp(['Lowland drainage eliminated: ' num2str(sum(~idx))])
 
 %get rid of fjords, only for small drainage areas
-durr_idx = false(size(BasinID));
-for ii=1:length(BasinID)
+durr_idx = false(size(BasinID_c));
+for ii=1:length(BasinID_c)
     %find 5 coastal types closest to river mouth, only discard if all are
     %fjord (4) and is relatively close (10 degrees) to durr dataset
     durr_dis = abs(single(mouth_both(ii))-durr_both);
@@ -147,7 +147,7 @@ for ii=1:length(BasinID)
     durr_idx(ii) = ~(all(durr_type(durr_sort(1:5))==4) && durr_dis(1)<2400);
     
 end
-durr_idx = durr_idx | BasinArea > 500;
+durr_idx = durr_idx | BasinArea_c > 500;
 disp(['Coastal Type Eliminated: ' num2str(sum(~durr_idx))])
 
 idx = idx & durr_idx;
@@ -180,19 +180,18 @@ set(gca,'CLim',[0 127],'DataAspectRatio',[1 1 1],'XLim',xl,'YLim',[107.5*240 109
 'XTick',xl(1):240:xl(2),'YTick',yl(1):240:yl(2),'XTickLabel',(264:267),'YTickLabel',(18:19))
 %}
 
-BasinID = BasinID(idx);
-BasinArea = BasinArea(idx);
-BasinAreaBAS = BasinAreaBAS(idx);
-MouthLat = MouthLat(idx);
-MouthLon = MouthLon(idx);
+BasinID_a{jj} = BasinID_c(idx);
+BasinArea_a{jj} = BasinArea_c(idx);
+BasinAreaBAS_a{jj} = BasinAreaBAS_c(idx);
+MouthLat_a{jj} = MouthLat_c(idx);
+MouthLon_a{jj} = MouthLon_c(idx);
 
 %check result
 %figure, scatter(log10(single(BasinArea)),log10(single(BasinAreaBAS)))
 
 
-save(['RiverMouth' continents{jj}],'BasinID','MouthLat','MouthLon','BasinArea','BasinAreaBAS')
-
 end
+
 
 
 %% find river mouths >59 lat and call it RiverMouthao
@@ -269,14 +268,14 @@ for jj=1:length(rm_lon)
 end
 
 wbm_idx_arctic = lin_idx(river_mouth_idx~=0);
-MouthLat = river_mouth_lat(river_mouth_idx~=0);
-MouthLon = river_mouth_lon(river_mouth_idx~=0);
+MouthLat_c = river_mouth_lat(river_mouth_idx~=0);
+MouthLon_c = river_mouth_lon(river_mouth_idx~=0);
 
-QRiver_prist = Prist.sed_total(river_mouth_idx~=0);
-Discharge_prist = Prist.dis_total(river_mouth_idx~=0);
-QRiver_dist = Dist.sed_total(river_mouth_idx~=0);
-Discharge_dist = Dist.dis_total(river_mouth_idx~=0);
-BasinArea = dr_a(river_mouth_idx~=0);
+QRiver_prist_arc = Prist.sed_total(river_mouth_idx~=0);
+Discharge_prist_arc = Prist.dis_total(river_mouth_idx~=0);
+QRiver_dist_arc = Dist.sed_total(river_mouth_idx~=0);
+Discharge_dist_arc = Dist.dis_total(river_mouth_idx~=0);
+BasinArea_c = dr_a(river_mouth_idx~=0);
 
 %get rid of fjords, only for small drainage areas
 %load coastal topology, durr et al
@@ -287,10 +286,10 @@ durr_size = arrayfun(@(x) length(x.Lon),durr);
 durr_type = cell2mat(arrayfun(@(x,y) (x.*ones(1,y)),[durr(:).FIN_TYP],durr_size','UniformOutput',false));
 durr_nan = isnan(durr_lon); durr_lon(durr_nan) = []; durr_lat(durr_nan) = []; durr_type(durr_nan) = [];
 durr_both = single(durr_lon + 1i*durr_lat);
-durr_idx = false(size(BasinArea));
+durr_idx = false(size(BasinArea_c));
 
-mouth_both = remfun(res*MouthLon) + 1i*res*(90+MouthLat);
-for ii=1:length(BasinArea)
+mouth_both = remfun(res*MouthLon_c) + 1i*res*(90+MouthLat_c);
+for ii=1:length(BasinArea_c)
     %find 5 coastal types closest to river mouth, only discard if all are
     %fjord (4) and is relatively close (10 degrees) to durr dataset
     durr_dis = abs(single(mouth_both(ii))-durr_both);
@@ -298,15 +297,111 @@ for ii=1:length(BasinArea)
     durr_idx(ii) = ~(all(durr_type(durr_sort(1:5))==4) && durr_dis(1)<2400);
     
 end
-idx = durr_idx | BasinArea > 10000;
+idx = durr_idx | BasinArea_c > 10000;
 disp(['Coastal Type Eliminated: ' num2str(sum(~durr_idx))])
 
-BasinArea = BasinArea(idx);
-MouthLat = MouthLat(idx);
-MouthLon = MouthLon(idx);
-QRiver_prist = QRiver_prist(idx);
-Discharge_prist = Discharge_prist(idx);
-QRiver_dist = QRiver_dist(idx);
-Discharge_dist = Discharge_dist(idx);
+BasinArea_a{8} = BasinArea_c(idx);
+MouthLat_a{8} = MouthLat_c(idx);
+MouthLon_a{8} = MouthLon_c(idx);
+QRiver_prist_arc = QRiver_prist_arc(idx);
+Discharge_prist_arc = Discharge_prist_arc(idx);
+QRiver_dist_arc = QRiver_dist_arc(idx);
+Discharge_dist_arc = Discharge_dist_arc(idx);
 
-save('RiverMouthao','MouthLon','MouthLat','BasinArea','QRiver_prist','Discharge_prist','QRiver_dist','Discharge_dist')
+%% merge continent files
+
+%save(['RiverMouth' continents{jj}],'BasinID','MouthLat','MouthLon','BasinArea','BasinAreaBAS')
+%save('RiverMouthao','MouthLon','MouthLat','BasinArea','QRiver_prist','Discharge_prist','QRiver_dist','Discharge_dist')
+
+
+%% combine continent files
+
+%merge all files into one mat file
+continents = {'na','af','ca','sa','eu','as','au','ao'};
+remfun = @(lon) (rem(360-1+lon,360)+1);
+
+k=0;
+for jj = 1:8,
+    %load([dropbox filesep 'WorldDeltas\scripts\Rivermouth' continents{jj} '.mat'],'BasinArea');
+    sz = length(BasinArea{jj});
+    Continent(k+(1:sz)) = jj;
+    k=k+sz;
+end
+Continent = Continent';
+BasinArea = zeros(k,1);
+MouthLat = zeros(k,1);
+MouthLon = zeros(k,1);
+%QRiver_dist = zeros(k,1);
+%QRiver_prist = zeros(k,1);
+%Discharge_dist = zeros(k,1);
+%Discharge_prist = zeros(k,1);
+BasinID = zeros(k,1);
+
+for jj = 1:8,
+    %out = load([dropbox filesep 'WorldDeltas\scripts\Rivermouth' continents{jj} '.mat']);
+    
+    MouthLon(Continent==jj) = MouthLon_a{jj};
+    MouthLat(Continent==jj) = MouthLat_a{jj};
+        
+    if jj==8,
+        BasinID(Continent==jj) = 1:length(MouthLat_a{jj});
+        
+        QRiver_dist(Continent==jj) = QRiver_dist_arc;
+        QRiver_prist(Continent==jj) = QRiver_prist_arc;
+        Discharge_dist(Continent==jj) = Discharge_dist_arc;
+        Discharge_prist(Continent==jj) = Discharge_prist_arc;
+        
+    else,
+        BasinID(Continent==jj) = BasinID_a{jj};    
+    end
+        
+    BasinArea(Continent==jj) = BasinArea_a{jj};
+    %QRiver_dist(Continent==jj) = out.QRiver_dist.*fact;
+    %QRiver_prist(Continent==jj) = out.QRiver_prist.*fact;
+    %Discharge_dist(Continent==jj) = out.Discharge_dist.*fact;
+    %Discharge_prist(Continent==jj) = out.Discharge_prist.*fact;
+    
+end
+
+
+
+% add continent flag
+diva = shaperead('D:\OneDrive - Universiteit Utrecht\DIVA\cls_p18_2.shp','UseGeoCoords',true);
+remfun = @(lon) (rem(360-1+lon,360)+1);
+diva_lon = remfun([diva(:).Lon]);
+diva_lat = ([diva(:).Lat]);
+diva_size = arrayfun(@(x) length(x.Lon),diva);
+diva_type = cell2mat(arrayfun(@(x,y) (x.*ones(1,y)),[diva(:).CPC],diva_size','UniformOutput',false));
+diva_cont = cell2mat(arrayfun(@(x,y) (x.*ones(1,y)),[diva(:).GVARID],diva_size','UniformOutput',false));
+[~,ia] = unique(int32(diva_lat) + 1000*int32(diva_lon));
+diva_lon = diva_lon(ia); diva_lat = diva_lat(ia); diva_type = diva_type(ia); diva_cont = diva_cont(ia);
+%scatter(diva_lon,diva_lat,40,diva_cont)
+
+diva_both = diva_lon + 1i*diva_lat;
+delta_both = MouthLon + 1i*MouthLat;
+[~,x] = min(abs(repmat(delta_both,1,length(diva_both))-diva_both),[],2);
+
+%{
+Region = int32(diva_cont(x))';
+%scatter(MouthLon,MouthLat,30,cont)
+hold on,
+l = unique(diva_cont);
+for ii=1:length(l),
+    
+    scatter(MouthLon(Region==l(ii)),MouthLat(Region==l(ii)),30,Region(Region==l(ii)),'filled')
+end
+
+Region(Region==0) = 3;
+Region(Region==23) = 18;
+Region(Region>14) = Region(Region>14)-1;
+Region_str = {'East Africa', 'South Asia','West Africa','Baltic','Eastern Central America','Western Central America','Carribean','Russia','East Asia','Middle-East','Northern Africa','Eastern North America','Western North America','Northern Mediterranean','Western Europe','Oceania','Pacific Islands','Eastern South America','Western South America','Southeast Asia'};
+%}
+
+% save files
+BasinID2 = int64(BasinID.*10+Continent);
+
+save([dropbox filesep 'github\GlobalDeltaChange\GlobalDeltaData.mat'],'BasinArea','MouthLat','MouthLon','BasinID','BasinID2','Continent','QRiver_prist','QRiver_dist','Discharge_prist','Discharge_dist');
+
+%kmlwrite('GlobalDeltaData',MouthLat,MouthLon,'Name',cellstr(num2str(BasinArea,'%1.0e')))
+%kmlwrite('GlobalDeltaBasinID',MouthLat,MouthLon,'Name',cellstr(num2str(BasinID,'%1.0f')),'Description',cellstr(num2str(BasinArea,'%1.0e')))
+
