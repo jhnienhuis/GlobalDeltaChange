@@ -1,8 +1,7 @@
-function create_shapefile(f)
+function create_shapefile
 
 %% load all deltas
 load([dropbox filesep 'WorldDeltas' filesep 'scripts' filesep 'GlobalDeltaData.mat'])
-load(f)
 MouthLon = rem(MouthLon+360,360);
 mouthboth = MouthLon+1i*MouthLat;
 
@@ -119,6 +118,7 @@ fname = 'GlobalDeltaBasins';
 shapewrite(p,fname)
 zip([fname '_shp'],{[fname '.dbf'],[fname '.shx'],[fname '.shp']})
 delete([fname '.dbf'],[fname '.shx'],[fname '.shp'])
+
 b = geopoint(MouthLat,MouthLon,'BasinID',double(BasinID),'BasinID2',double(BasinID2),'BasinID_ATL',double(BasinID_ATLAS),'BasinArea',BasinArea,'Dis_pris',Discharge_prist,'Dis_dist',Discharge_dist,'delta_name',delta_name,'Dis_tide',Discharge_tide,...
     'MouthLat',MouthLat,'MouthLon',MouthLon,'QRiver_dis',QRiver_dist,'QRiver_pri',QRiver_prist,'QTide',QTide,'QWave',QWave,'Hs',Hs,'TidalAmp',TidalAmp,...
     'DeltaAreaGa',ee.dep_aqua,'DeltaAreaLo',ee.ero_aqua);

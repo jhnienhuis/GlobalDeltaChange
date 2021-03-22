@@ -1,4 +1,4 @@
-clr
+function get_hydrobasins_id
 %get list of basin id
 opts = delimitedTextImportOptions("NumVariables", 2);
 opts.DataLines = [2, Inf];
@@ -98,8 +98,11 @@ for ii=1:length(basins_lat),
     %basins_lat{ii} = basins_lat{ii}(idx(idx2):10:([-1 0]+idx(idx2+1)));
     %basins_lon{ii} = basins_lon{ii}(idx(idx2):10:([-1 0]+idx(idx2+1)));
 end
-%}
-%% write to shapefiles and .mat files
+
+save GlobalDeltaData -append BasinID_ATLAS RiverID_ATLAS
+
+%{
+ write to shapefiles and .mat files
 %shapefile limited to 10 character attribute names..
 p = geoshape(basins_lat,basins_lon,'BasinID',BasinID,'BasinID2',double(BasinID2),'BasinID_ATL',double(BasinID_ATLAS),'BasinArea',BasinArea,'Dis_pris',Discharge_prist,'Dis_dist',Discharge_dist,'Dis_tide',Discharge_tide,...
     'MouthLat',MouthLat,'MouthLon',MouthLon,'QRiver_dis',QRiver_dist,'QRiver_pri',QRiver_prist,'QTide',QTide,'QWave',QWave,'Hs',Hs,'TidalAmp',TidalAmp,...
@@ -113,4 +116,4 @@ b.Geometry = 'point';
 
 shapewrite(b,'GlobalDeltaMouth')
 
-save GlobalDeltaData -append BasinID_ATLAS RiverID_ATLAS
+%}

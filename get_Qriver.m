@@ -1,5 +1,6 @@
-%% get flux per river mouth, for all continents except arctic
-load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat']);
+function get_Qriver
+% get flux per river mouth, for all continents except arctic
+load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'],'Continent','MouthLat','MouthLon','BasinArea','BasinID','QRiver_prist','Discharge_prist','QRiver_dist','Discharge_dist');
 
 c_list = {'na','af','ca','sa','eu','as','au'};
 
@@ -71,4 +72,4 @@ Discharge_dist = Discharge_dist(idx);
 Discharge_prist = Discharge_prist(idx);
 Continent = Continent(idx);
 
-load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'],'Continent','MouthLat','MouthLon','BasinArea','BasinID','QRiver_prist','Discharge_prist','QRiver_dist','Discharge_dist','-append')
+save([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'],'Continent','MouthLat','MouthLon','BasinArea','BasinID','QRiver_prist','Discharge_prist','QRiver_dist','Discharge_dist','-append')

@@ -1,3 +1,6 @@
+function find_river_mouth
+%get started with obtaining all global deltas
+
 %%new river mouth algorithm, all cells
 continents = {'na','af','ca','sa','eu','as','au'};
 
@@ -194,7 +197,7 @@ end
 
 
 
-%% find river mouths >59 lat and call it RiverMouthao
+%% find river mouths >59 lat based on WBMSed
 
 %do this with the WBMSed dataset, based on the 6min data that is available
 %north of the wall
@@ -308,12 +311,6 @@ Discharge_prist_arc = Discharge_prist_arc(idx);
 QRiver_dist_arc = QRiver_dist_arc(idx);
 Discharge_dist_arc = Discharge_dist_arc(idx);
 
-%% merge continent files
-
-%save(['RiverMouth' continents{jj}],'BasinID','MouthLat','MouthLon','BasinArea','BasinAreaBAS')
-%save('RiverMouthao','MouthLon','MouthLat','BasinArea','QRiver_prist','Discharge_prist','QRiver_dist','Discharge_dist')
-
-
 %% combine continent files
 
 %merge all files into one mat file
@@ -331,10 +328,10 @@ Continent = Continent';
 BasinArea = zeros(k,1);
 MouthLat = zeros(k,1);
 MouthLon = zeros(k,1);
-%QRiver_dist = zeros(k,1);
-%QRiver_prist = zeros(k,1);
-%Discharge_dist = zeros(k,1);
-%Discharge_prist = zeros(k,1);
+QRiver_dist = zeros(k,1);
+QRiver_prist = zeros(k,1);
+Discharge_dist = zeros(k,1);
+Discharge_prist = zeros(k,1);
 BasinID = zeros(k,1);
 
 for jj = 1:8,
@@ -356,10 +353,6 @@ for jj = 1:8,
     end
         
     BasinArea(Continent==jj) = BasinArea_a{jj};
-    %QRiver_dist(Continent==jj) = out.QRiver_dist.*fact;
-    %QRiver_prist(Continent==jj) = out.QRiver_prist.*fact;
-    %Discharge_dist(Continent==jj) = out.Discharge_dist.*fact;
-    %Discharge_prist(Continent==jj) = out.Discharge_prist.*fact;
     
 end
 
@@ -401,7 +394,3 @@ Region_str = {'East Africa', 'South Asia','West Africa','Baltic','Eastern Centra
 BasinID2 = int64(BasinID.*10+Continent);
 
 save([dropbox filesep 'github\GlobalDeltaChange\GlobalDeltaData.mat'],'BasinArea','MouthLat','MouthLon','BasinID','BasinID2','Continent','QRiver_prist','QRiver_dist','Discharge_prist','Discharge_dist');
-
-%kmlwrite('GlobalDeltaData',MouthLat,MouthLon,'Name',cellstr(num2str(BasinArea,'%1.0e')))
-%kmlwrite('GlobalDeltaBasinID',MouthLat,MouthLon,'Name',cellstr(num2str(BasinID,'%1.0f')),'Description',cellstr(num2str(BasinArea,'%1.0e')))
-
