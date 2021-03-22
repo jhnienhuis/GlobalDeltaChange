@@ -21,10 +21,6 @@ QRiver_prist = zeros(k,1);
 Discharge_dist = zeros(k,1);
 Discharge_prist = zeros(k,1);
 BasinID = zeros(k,1);
-channel_len = zeros(k,20);
-channel_len_lat = zeros(k,20);
-channel_len_lon = zeros(k,20);
-
 
 for jj = 1:8,
     out = load([dropbox filesep 'WorldDeltas\scripts\Rivermouth' continents{jj} '.mat']);
@@ -40,10 +36,7 @@ for jj = 1:8,
         MouthLon(Continent==jj) = out.MouthLon;
         ChannelSlope(Continent==jj) = out.channel_slope;
         
-        channel_len(Continent==jj,:) = out.channel_len;
-        channel_len_lat(Continent==jj,:) = out.channel_len_lat;
-        channel_len_lon(Continent==jj,:) = out.channel_len_lon;
-        
+       
         BasinID(Continent==jj) = out.BasinID;
         nnz(unique(out.BasinID))
         nnz(out.BasinID)
@@ -71,9 +64,6 @@ Discharge_dist = Discharge_dist(idx);
 Discharge_prist = Discharge_prist(idx);
 ChannelSlope = ChannelSlope(idx);
 Continent = Continent(idx);
-channel_len = channel_len(idx,:);
-channel_len_lat = channel_len_lat(idx,:);
-channel_len_lon = channel_len_lon(idx,:);
 
 % add continent flag
 diva = shaperead('D:\OneDrive - Universiteit Utrecht\DIVA\cls_p18_2.shp','UseGeoCoords',true);

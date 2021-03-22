@@ -1,7 +1,7 @@
 %% get QWave
 function get_Qwave
 %load global map of directional wave energy spectra
-load(['D:\OneDrive - Universiteit Utrecht\Waves\Software\DirMapGlo.mat'],'hs','energy','tp')
+load(['D:\OneDrive - Universiteit Utrecht\Waves\Software\DirMapGlo.mat'],'hs','energy','tp','wind')
 
 load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'],'MouthLon','MouthLat','BasinID2','delta_name','QRiver_prist');
 
@@ -37,7 +37,7 @@ FetchDeltas = get_Qwave_fetch(MouthLon,MouthLat,lat,lon,FetchAll,QRiver_prist,de
 for ii=1:numel(MouthLat),
     
     %find fetch, convert to nautical degrees
-    fe = FetchDeltas(ii,[271:360,1:270])==127;
+    fe = FetchDeltas(ii,[271:360,1:270]);
     
     [~,x,y] = max2d(hs(wave_lat(ii)+(-sbox:sbox),remfun(wave_lon(ii)+(-sbox:sbox))));
     
@@ -45,15 +45,22 @@ for ii=1:numel(MouthLat),
     wave_lon(ii) = remfun(wave_lon(ii)-sbox-1+y);
     
     
-    if sum(fe)==0,
+    
+    
+    
+    if sum(fe==127)==0,
+                
         %only local waves
+        fe_mean = mean(max(0,fe));
+        
+        Hs(ii) = Hsl(wind(wave_lat(ii),wave_lon(ii))./4,fe_mean.*1e3);
+        Tp(ii) = Tpl(wind(wave_lat(ii),wave_lon(ii))./4,fe_mean.*1e3);
+        sedconv = conv(Tp(ii).^0.2.*Hs(ii).^2.4,sedtrans,'full'); % sedconv in kg/s
+        QWave(ii) = wave_multiplier.*(max(sedconv)-min(sedconv));
+        
         wave_lat(ii) = nan;
         wave_lon(ii) = nan;
         
-        Hs(ii) = Hsl(u_ave,mean(max(0,fe)).*1e3);
-        Tp(ii) = Tpl(u_ave,mean(max(0,fe)).*1e3);
-        sedconv = conv(Tp(ii).^0.2.*Hs(ii).^2.6,sedtrans,'full'); % sedconv in kg/s
-        QWave(ii) = wave_multiplier.*(max(sedconv)-min(sedconv));
 
     elseif isnan(hs(wave_lat(ii),wave_lon(ii))),
         wave_lat(ii) = nan;
@@ -65,13 +72,17 @@ for ii=1:numel(MouthLat),
 
         
         %only get energy directed at delta.
-        energy_in = squeeze(energy(wave_lat(ii),wave_lon(ii),:)).*(fe)';
+        energy_in = squeeze(energy(wave_lat(ii),wave_lon(ii),:)).*(fe==127)';
         
         Hs(ii) = sqrt(sum(energy_in));
         Tp(ii) = nanmedian(tp(wave_lat(ii)+(-sbox:sbox),remfun(wave_lon(ii)+(-sbox:sbox))),'all');
                 
         sedconv = conv(fliplr(tp(wave_lat(ii),wave_lon(ii)).^0.2.*energy_in),sedtrans,'full'); % sedconv in kg/s
         QWave(ii) = wave_multiplier.*(max(sedconv)-min(sedconv)).^1.2;
+    end
+    
+    if Hs(ii)>10,
+        disp('blub')
     end
     
 end

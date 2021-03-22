@@ -191,7 +191,7 @@ MouthLon = MouthLon(idx);
 
 
 save(['RiverMouth' continents{jj}],'BasinID','MouthLat','MouthLon','BasinArea','BasinAreaBAS')
-kmlwrite(['RiverMouth' continents{jj}],MouthLat,MouthLon,'Name',cellstr(num2str(BasinArea','%1.0e')))
+
 end
 
 
@@ -310,4 +310,3 @@ QRiver_dist = QRiver_dist(idx);
 Discharge_dist = Discharge_dist(idx);
 
 save('RiverMouthao','MouthLon','MouthLat','BasinArea','QRiver_prist','Discharge_prist','QRiver_dist','Discharge_dist')
-kmlwrite('RiverMouthao',MouthLat,MouthLon,'Name',cellstr(num2str(BasinArea,'%1.0e')))
