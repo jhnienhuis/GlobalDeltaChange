@@ -45,27 +45,30 @@ MAIN FUNCTIONS:
 (4) get_bathy_profile.m
     uses etopo data to get steepest descent profiles of the underwater basin depths, from the river mouth to -100m
     
-(5) get_Qwave
+(5) get_Qwave.m
     adds wave data to each delta from WaveWatch. For deltas that are (partially) sheltered from wave approach angles, it estimates a fetch based on shoreline orientation.
     It uses the bretschneider fetch formula and WaveWatch wind data to estimate wave heights in sheltered locations. Uses get_global_fetch.m. 
-    Optionally you can use get_QWave_timeseries to get daily wave statistics
+    Optionally you can use get_QWave_timeseries to get daily wave statistics, or get_QWave_future to get estimates of future wave heights (up to 2100).
 
-(6) get_Qtide
+(6) get_Qtide.m
     adds tide data to each delta, based on TOPEX data
     
-(7) get_hydrobasins_id
+(7) get_hydrobasins_id.m
     adds identifiers from the new WWF HydroATLAS, HydroBasins, and HydroRIVERS datasets
 
-(8) 
+(8) add_names_to_deltas.m
+    Uses FAO data to find river names for deltas, where available.
 
-(7) get_aquamonitor_data
-    returns a shoreline that belongs to each delta
+SUPPLEMENTAL FUNCTIONS
 
-(7b) run https://code.earthengine.google.com/451465dc579747ae0b39b5f2f8ad1b12
-    retrieves land loss and land gain that belongs to each delta
-
-(7c) run get_aquamonitor_data
-    puts aquamonitor data back into the script
-
-(8) run create_netcdf
-    creates a netcdf from the .mat file
+land_area_change/get_aquamonitor_data
+    defines polygons for each river delta, and retrieves aquamonitor and earthsurfacewater explorer data to get delta coastal area land gain and loss within those regions. 
+    These data are noisy, so use with caution and with appropriate estimates of data uncertainty. The GEE code can be found at:
+    https://code.earthengine.google.com/21dd5f216c625b8696b4d9af6ee55215
+    We manually define polygons for the 100 largest deltas (see GlobalDeltaMax100.kml), and use proxies for delta area size for the remaining deltas.
+    
+export_data/create_kml, create_netcdf, create_shapefile, create_shapefile_deltaland
+    various functions to export relevant data to kml, netcdf, and shapefile formats
+    
+misc/galloway_predictor
+    function to plot output in the galloway triangle.
