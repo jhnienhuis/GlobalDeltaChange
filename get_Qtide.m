@@ -1,9 +1,10 @@
+function get_Qtide
 %% Get tidal fluxes
 load([dropbox filesep 'WorldDeltas' filesep 'scripts' filesep 'GlobalDeltaData.mat'])
 
 direc = 'D:\OneDrive - Universiteit Utrecht\Tides\';
-lat_tide = ncread([direc 'hf.m2_tpxo8_atlas_30c_v1.nc'],'lat_z');
-lon_tide = ncread([direc 'hf.m2_tpxo8_atlas_30c_v1.nc'],'lon_z');
+%lat_tide = ncread([direc 'hf.m2_tpxo8_atlas_30c_v1.nc'],'lat_z');
+%lon_tide = ncread([direc 'hf.m2_tpxo8_atlas_30c_v1.nc'],'lon_z');
 
 m2 = int32(abs(single(ncread([direc 'hf.m2_tpxo8_atlas_30c_v1.nc'],'hRe'))+1i*single(ncread([direc 'hf.m2_tpxo8_atlas_30c_v1.nc'],'hIm'))));
 m4 = int32(abs(single(ncread([direc 'hf.m4_tpxo8_atlas_30c_v1.nc'],'hRe'))+1i*single(ncread([direc 'hf.m4_tpxo8_atlas_30c_v1.nc'],'hIm'))));
@@ -51,7 +52,7 @@ for ii=1:numel(MouthLat),
             [loc_y,loc_x] = find(hamax(mouth_lat(ii)+(-sbox:sbox),remfun(mouth_lon(ii)+(-sbox:sbox)))>0);
             
             if isempty(loc_y),
-                tide_a(ii) = nan;
+                tide_a(ii) = 0;
             end
             
         end
@@ -78,20 +79,24 @@ tide_omega(tide_omega==1) = 0.7e-4;
 tide_a = tide_a./1000;
 Discharge_prist(Discharge_prist<=0) = 1e-10;
 QRiver_prist(QRiver_prist<=0) = 1e-10;
-ChannelSlope(ChannelSlope==0) = 1e-4;
+ChannelSlope(isnan(ChannelSlope) | ChannelSlope==0) = 1e-4;
 
-w_upstream = 10*Discharge_prist.^0.5;
-d_upstream = 0.3*Discharge_prist.^0.35;
-beta = w_upstream./d_upstream;
-t_length = max(2*tide_a,d_upstream)./ChannelSlope;
-t_length = min(t_length,pi./tide_omega.*sqrt(d_upstream.*10)); %put limiter on tidal intrusion distance based on tidal wave celerity
+width_upstream = 6.5*Discharge_prist.^0.5; %edmonds/slingerland
+depth_upstream = 0.3*Discharge_prist.^0.35; %edmonds/slingerland
+beta = width_upstream./depth_upstream;
+%v_length = mean([2*tide_a,d_upstream],2); %estimate of vertical scale for tide intrusion
+
+t_length = mean([2*tide_a,depth_upstream],2)./ChannelSlope;
+%t_length = min(t_length,pi./tide_omega.*sqrt(d_upstream.*10)); %put limiter on tidal intrusion distance based on tidal wave celerity
 
 k = tide_omega./(pi*sqrt(0.2*1e-4)*1.65*55);
 
+width_mouth = (beta.*k.*tide_a.*t_length)+width_upstream;
+depth_mouth = width_mouth./beta;
 Discharge_tide = double(0.5*tide_omega.*k.*tide_a.^2.*t_length.^2.*beta.*(1+2.*ChannelSlope./(k.*tide_a))); %Qtide in m3/s of water %corrected!
 QTide = Discharge_tide.*min(1,QRiver_prist./Discharge_prist); %Qtide in kg/s of sediment assuming same sediment concentration
 TidalAmp = tide_a;
 
 MouthLon(MouthLon<0) = MouthLon(MouthLon<0) + 360;
 
-save('GlobalDeltaData.mat','QTide','Discharge_tide','ChannelSlope','QRiver_prist','TidalAmp','Discharge_prist','-append');
+save('GlobalDeltaData.mat','QTide','Discharge_tide','ChannelSlope','QRiver_prist','TidalAmp','Discharge_prist','width_mouth','depth_mouth','width_upstream','depth_upstream','-append');
