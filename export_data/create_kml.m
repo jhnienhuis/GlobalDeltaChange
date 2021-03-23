@@ -1,6 +1,6 @@
-function create_kml(f)
-%load('GlobalDeltaData.mat','MouthLat','MouthLon','delta_name','BasinID2','QRiver_prist','QRiver_dist','QWave','QTide')
-load(f)
+function create_kml
+load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'],'MouthLat','MouthLon','delta_name','BasinID2','QRiver_prist','QRiver_dist','QWave','QTide')
+%load(f)
 
 [~,mor_pred] = max([QWave,QRiver_prist,QTide],[],2);
 icon(mor_pred == 3) = {'http://maps.google.com/mapfiles/kml/paddle/red-blank.png'};

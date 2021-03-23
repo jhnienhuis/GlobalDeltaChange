@@ -1,7 +1,8 @@
-function create_netcdf(f)
+function create_netcdf
+
+out = load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat']);
 
 
-out = load(f); %[dropbox filesep 'WorldDeltas' filesep 'scripts' filesep 'GlobalDeltaData.mat']);
 
 
 if isfield(out,'delta_name'),
@@ -9,12 +10,6 @@ out.delta_name = char(out.delta_name);
 end
 out.Region_str = char(out.Region_str);
 out.Region = double(out.Region);
-if isfield(out,'ee')
-out.net_aqua = out.ee.net_aqua;
-out.ero_aqua = out.ee.ero_aqua;
-out.dep_aqua = out.ee.dep_aqua;
-out = rmfield(out,'ee');
-end
 ftext={'wave_lat','dec deg','Wave data node latitude';...
 'wave_lon','dec deg','Wave data node longitude';...
 'shelf_depth','m','Continental shelf depth, based on complicated algorithm for finding the shelf break';...
@@ -45,12 +40,12 @@ ftext={'wave_lat','dec deg','Wave data node latitude';...
 'Discharge_prist', 'm3/s','Pre-dam river discharge';...
 'QRiver_dist','kg/s','Modern river sediment flux';...
 'QRiver_prist','kg/s','Pre-dam/pre-land-use change river sediment flux';...
-'delta_name','','Name of river';...
-'delta_name_id','','BasinID of delta_name';...
-'net_aqua','km2/yr','Net land area change from the AquaMonitor';...
-'ero_aqua','km2/yr','Delta land loss from the AquaMonitor';...
-'dep_aqua','km2/yr','Delta land gain from the AquaMonitor'};
+'delta_name','','Name of river'};
     
+
+fna = fieldnames(out);
+[~,idx] = ismember(fna,ftext(:,1));
+out = rmfield(out,fna(idx==0));
 
 [~,idx] = ismember(fieldnames(out),ftext(:,1));
 funits = ftext(idx,2);

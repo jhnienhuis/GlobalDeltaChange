@@ -1,7 +1,9 @@
 function create_shapefile
 
-%% load all deltas
-load([dropbox filesep 'WorldDeltas' filesep 'scripts' filesep 'GlobalDeltaData.mat'])
+% load all deltas
+load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'])
+ee = load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'land_area_change' filesep 'GlobalDeltaData_AreaChange.mat']);
+
 MouthLon = rem(MouthLon+360,360);
 mouthboth = MouthLon+1i*MouthLat;
 
@@ -16,7 +18,7 @@ opts.EmptyLineRule = "read";
 mainbasid = table2array(readtable("D:\OneDrive - Universiteit Utrecht\HydroSheds\BasinATLAS_Data_v10_shp\BasinATLAS_v10_shp\main_bas_id.csv", opts));
 clear opts
 
-%% match rivers to deltas (again...)
+% match rivers to deltas (again...)
 con = {'RiverATLAS_v10_eu','RiverATLAS_v10_na','RiverATLAS_v10_ar','RiverATLAS_v10_si','RiverATLAS_v10_au','RiverATLAS_v10_as','RiverATLAS_v10_af','RiverATLAS_v10_sa_north','RiverATLAS_v10_sa_south'};
 
 for ii=1:length(con)
@@ -39,7 +41,7 @@ riverArea = [riverArea{:}];
 riverboth = [riverboth{:}];
 
 
-%% do fancy minimum
+% do fancy minimum
 blub = (abs(riverboth-mouthboth)+...
     (abs((riverArea-BasinArea)./BasinArea.*log10(BasinArea)))+...
     (abs(riverboth-mouthboth)>8).*10);
@@ -55,7 +57,7 @@ plot(riverBoth,'*r'), hold on
 plot(mouthboth(Continent==8),'o'), hold on
 plot(riverBoth(idx),'d','MarkerSize',15);
 %}
-%% match
+% match
 Basins = riverBasID(idx);
 RiverBasinArea = riverArea(idx);
 riverboth = riverboth(idx);
@@ -102,7 +104,7 @@ for ii=1:length(basins_lat),
 end
 %save GlobalDeltaData -append BasinID_ATLAS 
 %}
-%% write to shapefiles and .mat files
+% write to shapefiles
 MouthLon(MouthLon>180) = MouthLon(MouthLon>180)-360;
 channel_len_lon(channel_len_lon>180) = channel_len_lon(channel_len_lon>180)-360;
 channel_len_lat(channel_len_lat==0) = NaN; channel_len_lon(channel_len_lon==0) = NaN;

@@ -63,9 +63,9 @@ BasinID = (10*BasinID+Continent);
 DeltaRadius = sqrt(1.07.*Discharge_prist.^0.7.*QRiver_prist.^0.45/pi/100);
 DeltaBuffer = 1000+(DeltaRadius*1000);
 
-pekel2_rate = mapshape(delta_shoreline_lon,delta_shoreline_lat,'BasinID',(BasinID),'Buffer',(DeltaBuffer));
+gee_shapefile = mapshape(delta_shoreline_lon,delta_shoreline_lat,'BasinID',(BasinID),'Buffer',(DeltaBuffer));
 
-shapewrite(pekel2_rate,'GlobalDeltaShorelineData.shp')
+shapewrite(gee_shapefile,'GlobalDeltaShorelineData.shp')
 
 %% Create shapefile for manual data for 100 largest deltas
 load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'],'MouthLon','MouthLat','BasinID2','QRiver_prist');
@@ -88,17 +88,17 @@ for ii=1:100,
     delta_shoreline_lon{ii} = p(idxx(ii)).Lon;
 end
 
-delta_polygons = mapshape(delta_shoreline_lon,delta_shoreline_lat,'BasinID2',double(BasinID2(idx(1:100))));    
-delta_polygons.Geometry = 'polygon';
+gee_shapefile100 = mapshape(delta_shoreline_lon,delta_shoreline_lat,'BasinID2',double(BasinID2(idx(1:100))));    
+gee_shapefile100.Geometry = 'polygon';
 
-shapewrite(delta_polygons,[kname '.shp'])
+shapewrite(gee_shapefile100,[kname '.shp'])
 zip([kname '.zip'],{[kname '.shp'],[kname '.shx'],[kname '.dbf']})
 delete([kname '.shp'],[kname '.shx'],[kname '.dbf'])
 
 %% put results back into mat file
 clr
 f = [dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep];
-ee = load([f 'GlobalDeltaData.mat'],'BasinID2');
+ee = load([f 'GlobalDeltaData.mat'],'BasinID2','delta_name');
 
 %file exported from earth engine
 fileID = fopen([f 'GlobalDeltaChange.csv'],'r');
@@ -138,47 +138,46 @@ null = max(0,la_max-pekel2_dry-pekel2_wet);
 dry_corr = (pekel2_dry+fr_dry.*null);
 dry_corr = dry_corr-nanmean(dry_corr,2);
 
-t = datenum(1985,3:420,1);
-tt=(0:length(t)-1)./12;
-[ee.pekel2_t,~,~] = datevec(t);
-ee.pekel2_rate_y = zeros(size(dry_corr,1),35);
-ee.pekel2_rate = zeros(size(dry_corr,1),1);
-ee.pekel2_unc = zeros(size(dry_corr,1),2);
+t = datenum(1984:2019,1,1);
+[ee.net_pekel2_t,~,~] = datevec(t);
+ee.net_pekel2_y = zeros(size(dry_corr,1),36);
+ee.net_pekel2 = zeros(size(dry_corr,1),1);
+ee.net_pekel2_unc = zeros(size(dry_corr,1),2);
 
 fitType = fittype('poly1');
 
 for ii=1:size(dry_corr,1),
-    if mod(ii,100)==1, ii, end
-    idx = ~isnan(dry_corr(ii,:));
+    idxnan = ~isnan(dry_corr(ii,:));
     %[rate(ii,[1 2]),S] = polyfit(tt(~idx),dry_corr(ii,~idx),1);
     %[~,rate_unc(ii)] = polyval(rate(ii,:),0,S);
-    if sum(idx)<2, 
-        ee.pekel2_rate(ii)=0; 
-        ee.pekel2_unc(ii,:)=0; 
-        ee.pekel2_rate_y(ii,1:35) = 0; 
+    if sum(idxnan)<2, 
+        ee.net_pekel2(idx(ii))=0; 
+        ee.net_pekel2_unc(idx(ii),:)=0; 
+        ee.net_pekel2_y(idx(ii),1:35) = 0; 
         continue, 
     end
-    fi = fit(tt(idx)',dry_corr(ii,idx)',fitType);
-    ee.pekel2_rate(ii) = fi.p1;
+    fi = fit(t(idxnan)'./365,dry_corr(ii,idxnan)',fitType);
+    ee.net_pekel2(idx(ii)) = fi.p1;
     unc = confint(fi);
-    ee.pekel2_unc(ii,:) = unc(:,1);
+    ee.net_pekel2_unc(idx(ii),:) = unc(:,1);
 
-    ee.pekel2_rate_y(ii,1:35) = accumarray(ee.pekel2_t'-1984,dry_corr(ii,:)',[],@nanmean);
+    ee.net_pekel2_y(idx(ii),:) = dry_corr(ii,:);
+    %accumarray(ee.net_pekel2_t'-1984,dry_corr(ii,:)',[],@nanmean);
     
 end
 
 %add to .mat file
-save([f 'GlobalDeltaData_AreaChange.mat'],'-struct','ee');
+save([f 'land_area_change' filesep 'GlobalDeltaData_AreaChange.mat'],'-struct','ee');
 
 
 %% put 100 largest deltas also in mat file
 
 clr
 f = [dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep];
-ee = load([f 'GlobalDeltaData_AreaChange.mat']);
+ee = load([f 'land_area_change' filesep 'GlobalDeltaData_AreaChange.mat']);
 
 %file exported from earth engine
-fileID = fopen([f 'GlobalDeltaChangeMax100.csv'],'r');
+fileID = fopen([f 'land_area_change' filesep 'GlobalDeltaMax100.csv'],'r');
 data = textscan(fileID, '%q%f%f%f%f%f%f%f%q%q%[^\n\r]', 'Delimiter', ',', 'HeaderLines' ,1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
 fclose(fileID);
 
@@ -214,176 +213,33 @@ null = max(0,la_max-pekel2_dry-pekel2_wet);
 dry_corr = (pekel2_dry+fr_dry.*null);
 dry_corr = dry_corr-nanmean(dry_corr,2);
 
-t = datenum(1985,3:420,1);
-tt=(0:length(t)-1)./12;
-[ee.pekel2_t,~,~] = datevec(t);
-ee.pekel2_rate_y(idx,:) = zeros(size(dry_corr,1),35);
-ee.pekel2_rate(idx,:) = zeros(size(dry_corr,1),1);
-ee.pekel2_unc(idx,:) = zeros(size(dry_corr,1),2);
+t = datenum(1984:2019,1,1);
+[ee.net_pekel2_t,~,~] = datevec(t);
+ee.net_pekel2_y(idx,:) = zeros(size(dry_corr,1),36);
+ee.net_pekel2(idx,:) = zeros(size(dry_corr,1),1);
+ee.net_pekel2_unc(idx,:) = zeros(size(dry_corr,1),2);
 
 fitType = fittype('poly1');
 
 for ii=1:size(dry_corr,1),
-    if mod(ii,100)==1, ii, end
     idxnan = ~isnan(dry_corr(ii,:));
     %[rate(ii,[1 2]),S] = polyfit(tt(~idx),dry_corr(ii,~idx),1);
     %[~,rate_unc(ii)] = polyval(rate(ii,:),0,S);
     if sum(idxnan)<2, 
-        ee.pekel2_rate(idx(ii))=0; 
-        ee.pekel2_unc(idx(ii),:)=0; 
-        ee.pekel2_rate_y(idx(ii),1:35) = 0; 
+        ee.net_pekel2(idx(ii))=0; 
+        ee.net_pekel2_unc(idx(ii),:)=0; 
+        ee.net_pekel2_y(idx(ii),1:35) = 0; 
         continue, 
     end
-    fi = fit(tt(idxnan)',dry_corr(ii,idxnan)',fitType);
-    ee.pekel2_rate(idx(ii)) = fi.p1;
+    fi = fit(t(idxnan)'./365,dry_corr(ii,idxnan)',fitType);
+    ee.net_pekel2(idx(ii)) = fi.p1;
     unc = confint(fi);
-    ee.pekel2_unc(idx(ii),:) = unc(:,1);
+    ee.net_pekel2_unc(idx(ii),:) = unc(:,1);
 
-    ee.pekel2_rate_y(idx(ii),1:35) = accumarray(ee.pekel2_t'-1984,dry_corr(ii,:)',[],@nanmean);
+    ee.net_pekel2_y(idx(ii),:) = dry_corr(ii,:);
+    %accumarray(ee.net_pekel2_t'-1984,dry_corr(ii,:)',[],@nanmean);
     
 end
 
 %add to .mat file
-save([f 'GlobalDeltaData_AreaChange.mat'],'-struct','ee');
-
-%% Delta Earth Engine shape file from NOAA maps
-%{
-res=1;
-remfun = @(lon) (rem(res*360-1+lon,res*360)+1);
-
-%load shoreline
-shore = shaperead('D:\GlobalDatasets\WorldCoastline\GSHHS_shp\f\GSHHS_f_L1.shp','Selector',{@(v1) (v1>100),'area'});
-shore2 = struct2cell(shore);
-
-%put lat and lon in imaginary numbers to make it a 1 line search
-shore_cellidx = cellfun(@length,shore2(3,:));
-shore_lon = remfun(cell2mat(shore2(3,:)));
-shore_lat = cell2mat(shore2(4,:));
-shore_both_all = shore_lon + 1i*shore_lat;
-[shore_both,~,shoreline_idx] = unique(round(shore_both_all));
-delta_both = (remfun(MouthLon)) + 1i*(MouthLat);
-plot(shore_both(1:100),'o'), hold on, plot(delta_both(1),'or','MarkerFaceColor','r','MarkerEdgeColor','none')
-
-%find closest shoreline for all 
-idx = zeros(size(delta_both));
-min_dist = zeros(size(delta_both));
-for ii=1:length(delta_both),
-   [min_dist(ii),idx(ii)] = min(abs(shore_both-delta_both(ii)));
-end
-
-delta_shoreline = cell(size(MouthLon));
-delta_shoreline_lat = cell(size(MouthLon));
-delta_shoreline_lon = cell(size(MouthLon));
-for ii=1:length(delta_both),
-    x = find(shoreline_idx==idx(ii));
-    [~,idxx] = min(abs(shore_both_all(x)-delta_both(ii)));
-    
-    %which continents in this?
-    co = find(x(idxx)<cumsum(shore_cellidx),1,'first');
-    
-    delta_shoreline{ii} = shore_both_all(x(idxx));
-    %<DeltaRadius(ii));
-    delta_shoreline_lat{ii} = shore_lat(delta_shoreline{ii});
-    delta_shoreline_lon{ii} = shore_lon(delta_shoreline{ii});
-end
-
-
-%plot(shore_both_all(delta_shoreline),'o'), hold on, plot(delta_both,'or','MarkerFaceColor','r','MarkerEdgeColor','none')
-%make shape file
-rate = mapshape(delta_shoreline_lon,delta_shoreline_lat,'DeltaArea',DeltaArea,'BasinID',BasinID);
-
-mapshow(rate)
-
-shapewrite(rate,'GlobalDeltaShorelineData.shp')
-%}
-
-%% get monthly data
-out = load([dropbox filesep 'WorldDeltas' filesep 'scripts' filesep 'GlobalDeltaData.mat']);
-
-%file exported from earth engine
-filename = 'D:\Dropbox\WorldDeltas\EarthEngine\GlobalDeltaChangeMonth5.csv';
-delimiter = ',';
-formatSpec = '%q%q%q%q%q%q%[^\n\r]';
-fileID = fopen(filename,'r');
-T = textscan(fileID, formatSpec, 'Delimiter', delimiter, 'TextType', 'string',  'ReturnOnError', false);
-fclose(fileID);
-%mississippiID = 4267691
-BasinID = double(T{2}(2:end));
-dry = arrayfun(@str2num,T{4}(2:end),'UniformOutput',0);
-wet = arrayfun(@str2num,T{5}(2:end),'UniformOutput',0);
-
-
-%re-order table
-BasinID2 = int64(out.BasinID*10+out.Continent);
-
-BasinID = BasinID(idx);
-
-
-%how to do this??
-%we have km2 water, km2 land, km2 nothing
-la_max = max(dry+wet,[],2);
-fr_dry = dry./(dry+wet);
-null = max(0,la_max-dry-wet);
-dry_corr = (dry+fr_dry.*null);
-dry_corr = dry_corr-nanmean(dry_corr,2);
-
-%do yearly thing also
-pekel2_t = datenum(1985,3:420,1);
-tt=(0:length(pekel2_t)-1)./12;
-
-save GlobalDeltaData_monthly BasinID BasinID2 dry_corr pekel2_t tt 
-
-%% 
-load GlobalDeltaData_monthly
-
-[pekel2_t,mm,~] = (datevec(pekel2_t));
-pekel2_rate_y = zeros(size(dry_corr,1),35);
-pekel2_rate = zeros(size(dry_corr,1),1);
-pekel2_unc = zeros(size(dry_corr,1),2);
-
-fitType = fittype('poly1');
-
-for ii=1:size(dry_corr,1),
-    if mod(ii,100)==1, ii, end
-    idx = ~isnan(dry_corr(ii,:));
-    %[rate(ii,[1 2]),S] = polyfit(tt(~idx),dry_corr(ii,~idx),1);
-    %[~,rate_unc(ii)] = polyval(rate(ii,:),0,S);
-    if sum(idx)<2, pekel2_rate(ii)=0; pekel2_unc(ii,:)=0; pekel2_rate_y(ii,1:35) = 0; continue, end
-    f = fit(tt(idx)',dry_corr(ii,idx)',fitType);
-    pekel2_rate(ii) = f.p1;
-    pekel2_unc = confint(f);
-    pekel2_unc(ii,:) = pekel2_unc(:,1);
-
-    pekel2_rate_y(ii,1:35) = accumarray(pekel2_t'-1984,dry_corr(ii,:)',[],@nanmean);
-    
-end
-save GlobalDeltaData_monthly -append pekel2_rate pekel2_unc pekel2_rate_y
-
-%% analysis
-load GlobalDeltaData_monthly
-out = load([dropbox filesep 'WorldDeltas' filesep 'scripts' filesep 'GlobalDeltaData.mat']);
-
-%scatter(out.MouthLon,out.MouthLat,max(1,10*abs(p(:,1))),sign(p(:,1)))
-
-%get change rate for couple of well-known deltas
-[~,idx] = ismember(int64(out.delta_name_id*10+out.delta_name_continent),BasinID2);
-[~,idx] = (ismember(int64(BasinID2(idx)),BasinID));
-table(out.delta_name,idx,int64(BasinID(idx)),pekel2_rate(idx),pekel2_unc(idx,1),pekel2_unc(idx,2))
-
-out.Region(out.Region>20)=11;
-table(out.Region_str',accumarray(out.Region,pekel2_rate(:,1),[],@sum),accumarray(out.Region,pekel2_rate(:,1),[],@(x) (mean(abs(x)))))
-
-table(accumarray(out.Continent,pekel2_rate(:,1),[],@(x) (mean(abs(x)))))
-
-%compare against aquamonitor and other pekel change metric
-scatter(out.ee.net_aqua,pekel2_rate)
-
-sqrt(mean((pekel2_rate-out.ee.net_aqua).^2))
-
-T = table(BasinID2,pekel2_rate,pekel2_unc,pekel2_rate_y);
-writetable(T,'GlobalDeltaData_monthly.csv')
-
-
-
-
-
+save([f 'land_area_change' filesep 'GlobalDeltaData_AreaChange.mat'],'-struct','ee');

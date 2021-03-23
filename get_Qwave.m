@@ -8,8 +8,9 @@ load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaD
 load('D:\Dropbox\GlobalFetch\GlobalFetch.mat','FetchAll','lon','lat')
 
 hs = flipud(hs); hs(hs<0.01) = nan;
+wind = flipud(wind); wind(isnan(hs)) = nan;
 energy = flipud(energy);
-tp = flipud(tp); tp(tp<0.1) = nan;
+tp = flipud(tp); tp(isnan(hs)) = nan;
 AngArray = linspace(-0.5*pi,0.5*pi,180);
 g = 9.81;
 k = 5.3e-6*1050*(g^1.5)*(0.5^1.2)*(sqrt(g*0.78)/(2*pi))^0.2;
@@ -29,12 +30,14 @@ wave_lat = floor(res*(91+MouthLat));
 wave_lon = floor(remfun(2+res*(MouthLon)));
 
 %figure, imagesc(hs), hold on, scatter(wave_lon,wave_lat,'r')
-sbox = 3; mid_idx = ceil(((2*sbox+1)^2)/2);
+
 
 %get fetch
 FetchDeltas = get_Qwave_fetch(MouthLon,MouthLat,lat,lon,FetchAll,QRiver_prist,delta_name);
 
 for ii=1:numel(MouthLat),
+
+    sbox = max(1,ceil(log10(QRiver_prist(ii)))); 
     
     %find fetch, convert to nautical degrees
     fe = FetchDeltas(ii,[271:360,1:270]);
@@ -44,30 +47,19 @@ for ii=1:numel(MouthLat),
     wave_lat(ii) = wave_lat(ii)-sbox-1+x;
     wave_lon(ii) = remfun(wave_lon(ii)-sbox-1+y);
     
-    
-    
-    
-    
-    if sum(fe==127)==0,
+    if sum(fe==127)==0 || isnan(hs(wave_lat(ii),wave_lon(ii))), %include rare cases where no wave data was found nearby, assume 10m/s wind.
                 
         %only local waves
         fe_mean = mean(max(0,fe));
         
-        Hs(ii) = Hsl(wind(wave_lat(ii),wave_lon(ii))./4,fe_mean.*1e3);
-        Tp(ii) = Tpl(wind(wave_lat(ii),wave_lon(ii))./4,fe_mean.*1e3);
+        w = wind(wave_lat(ii),wave_lon(ii));
+        w(isnan(w)) = 10;
+                 
+        Hs(ii) = Hsl(w./4,fe_mean.*1e3);
+        Tp(ii) = Tpl(w./4,fe_mean.*1e3);
         sedconv = conv(Tp(ii).^0.2.*Hs(ii).^2.4,sedtrans,'full'); % sedconv in kg/s
         QWave(ii) = wave_multiplier.*(max(sedconv)-min(sedconv));
         
-        wave_lat(ii) = nan;
-        wave_lon(ii) = nan;
-        
-
-    elseif isnan(hs(wave_lat(ii),wave_lon(ii))),
-        wave_lat(ii) = nan;
-        wave_lon(ii) = nan;
-        QWave(ii) = 0;
-        Hs(ii) = 0;
-        Tp(ii) = 0;
     else,
 
         
@@ -80,11 +72,7 @@ for ii=1:numel(MouthLat),
         sedconv = conv(fliplr(tp(wave_lat(ii),wave_lon(ii)).^0.2.*energy_in),sedtrans,'full'); % sedconv in kg/s
         QWave(ii) = wave_multiplier.*(max(sedconv)-min(sedconv)).^1.2;
     end
-    
-    if Hs(ii)>10,
-        disp('blub')
-    end
-    
+       
 end
 %{
 wave_lat = floor(res*(90+MouthLat));
