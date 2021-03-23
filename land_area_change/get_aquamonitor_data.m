@@ -101,7 +101,7 @@ f = [dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep];
 ee = load([f 'GlobalDeltaData.mat'],'BasinID2','delta_name');
 
 %file exported from earth engine
-fileID = fopen([f 'GlobalDeltaChange.csv'],'r');
+fileID = fopen([f 'land_area_change' filesep 'GlobalDeltaChange.csv'],'r');
 data = textscan(fileID, '%q%f%f%f%f%f%f%f%f%q%[^\n\r]', 'Delimiter', ',', 'HeaderLines' ,1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
 fclose(fileID);
 
@@ -151,17 +151,19 @@ for ii=1:size(dry_corr,1),
     %[rate(ii,[1 2]),S] = polyfit(tt(~idx),dry_corr(ii,~idx),1);
     %[~,rate_unc(ii)] = polyval(rate(ii,:),0,S);
     if sum(idxnan)<2, 
-        ee.net_pekel2(idx(ii))=0; 
-        ee.net_pekel2_unc(idx(ii),:)=0; 
-        ee.net_pekel2_y(idx(ii),1:35) = 0; 
+        ee.net_pekel2(ii)=0; 
+        ee.net_pekel2_unc(ii,:)=0; 
+        ee.net_pekel2_y(ii,1:36) = 0; 
         continue, 
     end
+    
+        
     fi = fit(t(idxnan)'./365,dry_corr(ii,idxnan)',fitType);
-    ee.net_pekel2(idx(ii)) = fi.p1;
+    ee.net_pekel2(ii) = fi.p1;
     unc = confint(fi);
-    ee.net_pekel2_unc(idx(ii),:) = unc(:,1);
+    ee.net_pekel2_unc(ii,:) = unc(:,1);
 
-    ee.net_pekel2_y(idx(ii),:) = dry_corr(ii,:);
+    ee.net_pekel2_y(ii,:) = dry_corr(ii,:);
     %accumarray(ee.net_pekel2_t'-1984,dry_corr(ii,:)',[],@nanmean);
     
 end
@@ -231,6 +233,8 @@ for ii=1:size(dry_corr,1),
         ee.net_pekel2_y(idx(ii),1:35) = 0; 
         continue, 
     end
+
+    
     fi = fit(t(idxnan)'./365,dry_corr(ii,idxnan)',fitType);
     ee.net_pekel2(idx(ii)) = fi.p1;
     unc = confint(fi);

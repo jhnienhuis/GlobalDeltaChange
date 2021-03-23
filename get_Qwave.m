@@ -37,7 +37,7 @@ FetchDeltas = get_Qwave_fetch(MouthLon,MouthLat,lat,lon,FetchAll,QRiver_prist,de
 
 for ii=1:numel(MouthLat),
 
-    sbox = max(1,ceil(log10(QRiver_prist(ii)))); 
+    sbox = max(1,ceil(log10(QRiver_prist(ii)))-2); 
     
     %find fetch, convert to nautical degrees
     fe = FetchDeltas(ii,[271:360,1:270]);
