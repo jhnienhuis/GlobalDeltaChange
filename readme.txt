@@ -1,7 +1,7 @@
 
-(c) Jaap Nienhuis, Utrecht University, 2019
-(c) Jaap Nienhuis, Utrecht University, 2021, version 2.0
-(This new version includes the newest land/water change data from GSW, local wave estimates from local wind fetch, submarine and subaerial elevation, river names, and more.)
+by Jaap Nienhuis, Utrecht University, 2019
+by Jaap Nienhuis, Utrecht University, 2021, version 2.0
+(Version 2.0 includes the newest land/water change data from GSW, local wave estimates from local wind fetch, submarine and subaerial elevation, river names, and more.)
 
 
 This readme explains how to generate a global delta dataset including relevant river/wave/tidal parameters that can be used to predict delta morphology.
