@@ -5,7 +5,7 @@ load(['D:\OneDrive - Universiteit Utrecht\Waves\Software\DirMapGlo.mat'],'hs','e
 
 load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'],'MouthLon','MouthLat','BasinID2','delta_name','QRiver_prist');
 
-load('D:\Dropbox\GlobalFetch\GlobalFetch.mat','FetchAll','lon','lat')
+load('D:\OneDrive - Universiteit Utrecht\WorldCoastline\GlobalFetch\GlobalFetch.mat','FetchAll','lon','lat')
 
 hs = flipud(hs); hs(hs<0.01) = nan;
 wind = flipud(wind); wind(isnan(hs)) = nan;

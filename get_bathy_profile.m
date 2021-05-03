@@ -5,14 +5,23 @@ load('GlobalDeltaData.mat','MouthLon','MouthLat');
 %get continental shelf depth
 
 %load world bathymetry
-[Z, refvec] = etopo('D:\OneDrive - Universiteit Utrecht\GlobalDEM\',5,[-90 90]);
-Z = Z(:,[(180*refvec(1)+1):end 1:(180*refvec(1))]);
+%[cz, refvec] = etopo('D:\OneDrive - Universiteit Utrecht\GlobalDEM\',5,[-90 90]);
+%cz = cz(:,[(180*refvec(1)+1):end 1:(180*refvec(1))]);
+
+load('D:\OneDrive - Universiteit Utrecht\GlobalDEM\SRTM15plus_int8.mat','cz');
+cz(cz>0) = 0;
+cz = double(cz);
+refvec = [240,90,-180];
+
+rsample = 20; cz = cz(1:rsample:end,1:rsample:end); refvec = [60/(0.25*rsample) 90 -180];
+
+
 
 %hoy many km per cell latitude (simple!)
 kmperlatcell = deg2km(1)./refvec(1);
 
 %how many km per cell longitude (depends on latitude)
-kmperloncell = kmperlatcell*cos(linspace(-0.5*pi,0.5*pi,size(Z,1)));
+kmperloncell = kmperlatcell*cos(linspace(-0.5*pi,0.5*pi,size(cz,1)));
 
 %find the coastline contour (read the contourc to see what the output looks like
 %C = contourc(Z,[0 0]);
@@ -57,7 +66,7 @@ shelf_len_lon(:,1) = real(delta_loc);
 %find minimum distance to the next contour line for every contour
 for jj=1:length(shelf_lines),
     jj
-    S = contourc(Z,[shelf_lines(jj) shelf_lines(jj)]);
+    S = contourc(cz,[shelf_lines(jj) shelf_lines(jj)]);
     S2 = S(1,S(1,:)~=shelf_lines(jj))+1i*S(2,S(1,:)~=shelf_lines(jj));
     
     %idx = zeros(length(delta_loc),1);
