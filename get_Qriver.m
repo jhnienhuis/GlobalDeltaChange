@@ -4,7 +4,7 @@ load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaD
 
 c_list = {'na','af','ca','sa','eu','as','au'};
 
-%resolution is 240 per degree (15s)
+%resolution is 240 per degree (15s) 
 res = 240;
 %resolution WBMSed is 10 per degree (6 min)
 res_wbm = 10;
