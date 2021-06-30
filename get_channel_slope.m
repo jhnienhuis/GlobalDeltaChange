@@ -148,6 +148,7 @@ for ii=1:length(channel_len),
     end
 end
 
+channel_slope(isnan(channel_slope) | channel_slope<2e-5) = 2e-5;
 
 %do mod to squeeze longitudes on a 0-360 grid.
 for ii=1:length(channel_len),

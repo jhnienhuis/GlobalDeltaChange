@@ -51,7 +51,7 @@ delta_loc = (refvec(1)*MouthLon)+1i.*(refvec(1).*(MouthLat+90));
 
 
 %do profiles for these contour lines
-shelf_lines = 0:-5:-100;
+shelf_lines = 0:-5:-120;
 
 %pre-allocate matrices
 shelf_len = zeros(length(delta_loc),length(shelf_lines));
