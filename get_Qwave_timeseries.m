@@ -12,7 +12,7 @@ end
 
 
 %scatter(int64(grd_lon(idx).*30),int64(grd_lat(idx).*30),50)
-%hold on
+%hold on,
 %scatter(int64(wave_lon.*30),int64(wave_lat.*30),'filled')
 %m = matfile('D:\OneDrive - Universiteit Utrecht\Waves\WaveWatch_timeseries\WaveWatch_timeseries.mat');
 

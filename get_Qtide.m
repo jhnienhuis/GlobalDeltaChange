@@ -1,6 +1,6 @@
 function get_Qtide
 %% Get tidal fluxes
-load([dropbox filesep 'WorldDeltas' filesep 'scripts' filesep 'GlobalDeltaData.mat'])
+load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'])
 
 direc = 'D:\OneDrive - Universiteit Utrecht\Tides\';
 %lat_tide = ncread([direc 'hf.m2_tpxo8_atlas_30c_v1.nc'],'lat_z');
@@ -79,24 +79,22 @@ tide_omega(tide_omega==1) = 0.7e-4;
 tide_a = tide_a./1000;
 Discharge_prist(Discharge_prist<=0) = 1e-10;
 QRiver_prist(QRiver_prist<=0) = 1e-10;
-ChannelSlope(isnan(ChannelSlope) | ChannelSlope==0) = 1e-4;
+channel_slope(isnan(channel_slope) | channel_slope<2e-5) = 2e-5;
 
 width_upstream = 6.5*Discharge_prist.^0.5; %edmonds/slingerland
-depth_upstream = 0.3*Discharge_prist.^0.35; %edmonds/slingerland
+depth_upstream = 0.586*Discharge_prist.^0.33; %edmonds/slingerland
 beta = width_upstream./depth_upstream;
-%v_length = mean([2*tide_a,d_upstream],2); %estimate of vertical scale for tide intrusion
 
-t_length = mean([2*tide_a,depth_upstream],2)./ChannelSlope;
-%t_length = min(t_length,pi./tide_omega.*sqrt(d_upstream.*10)); %put limiter on tidal intrusion distance based on tidal wave celerity
+t_length = mean([2*tide_a,depth_upstream],2)./channel_slope;
 
 k = tide_omega./(pi*sqrt(0.2*1e-4)*1.65*55);
 
 width_mouth = (beta.*k.*tide_a.*t_length)+width_upstream;
 depth_mouth = width_mouth./beta;
-Discharge_tide = double(0.5*tide_omega.*k.*tide_a.^2.*t_length.^2.*beta.*(1+2.*ChannelSlope./(k.*tide_a))); %Qtide in m3/s of water %corrected!
-QTide = Discharge_tide.*min(1,QRiver_prist./Discharge_prist); %Qtide in kg/s of sediment assuming same sediment concentration
+Discharge_tide = double(0.5*tide_omega.*k.*tide_a.^2.*t_length.^2.*beta.*(1+2.*channel_slope./(k.*tide_a))); %Qtide in m3/s of water %corrected!
+QTide = Discharge_tide.*max(1e-2,min(1,QRiver_prist./Discharge_prist)); %Qtide in kg/s of sediment assuming same sediment concentration, limits between 10 and 1000mg/L (1e-2 and 1 kg/m3)
 TidalAmp = tide_a;
 
 MouthLon(MouthLon<0) = MouthLon(MouthLon<0) + 360;
 
-save('GlobalDeltaData.mat','QTide','Discharge_tide','ChannelSlope','QRiver_prist','TidalAmp','Discharge_prist','width_mouth','depth_mouth','width_upstream','depth_upstream','-append');
+save('GlobalDeltaData.mat','QTide','Discharge_tide','QRiver_prist','TidalAmp','Discharge_prist','width_mouth','depth_mouth','width_upstream','depth_upstream','-append');

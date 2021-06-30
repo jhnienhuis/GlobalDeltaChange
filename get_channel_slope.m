@@ -3,9 +3,10 @@ function get_channel_slope
 
 %load located river mouths
 load('D:\Dropbox\github\GlobalDeltaChange\GlobalDeltaData.mat','MouthLat','MouthLon','BasinArea','Continent','RiverID_ATLAS','delta_name')
-load('D:\OneDrive - Universiteit Utrecht\GlobalDEM\CoastalZone_int8.mat','cz');
+%load('D:\OneDrive - Universiteit Utrecht\GlobalDEM\CoastalZone_int8.mat','cz');
+load('D:\OneDrive - Universiteit Utrecht\GlobalDEM\SRTM15plus_int8.mat','cz');
 sz = size(cz);
-
+cz(cz<0) = 0;
 res=240;
 ele_max = 30; %maximum elevation to search for
 Continent_name = {'na','af','ca','sa','eu','as','au'};
@@ -147,6 +148,7 @@ for ii=1:length(channel_len),
     end
 end
 
+channel_slope(isnan(channel_slope) | channel_slope<2e-5) = 2e-5;
 
 %do mod to squeeze longitudes on a 0-360 grid.
 for ii=1:length(channel_len),

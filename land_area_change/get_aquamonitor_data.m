@@ -1,5 +1,5 @@
 %% DeltaEarthEngineShapefile
-load([dropbox filesep 'WorldDeltas' filesep 'scripts' filesep 'GlobalDeltaData.mat']);
+load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat']);
 res=1;
 remfun = @(lon) (rem(res*360-1+lon,res*360)+1);
 
@@ -112,8 +112,8 @@ pekel2_wet = cell2mat(arrayfun(@(x) (str2num(str2num(x))),pekel2_wet,'UniformOut
 
 
 data = cell2mat(data(2:9)); %basin ID, deltaArea, change, deposition, erosion
-data_aqua = data(:,[4 6 8])/28; %aquamonitor change deposition erosion per year
-data_pekel = data(:,[3 5 7])/31; data_pekel(:,3) = data_pekel(:,3).*-1;
+data_aqua = data(:,[4 6 8])/20; %aquamonitor change deposition erosion per year (1984_240_2013_48 => 20 years)
+data_pekel = data(:,[3 5 7])/18; data_pekel(:,3) = data_pekel(:,3).*-1; %pekel water occurence change: mid between 1984-2000 and 2000-2020, is 18 years
 
 [~,idx] = ismember(ee.BasinID2,data(:,1));
 idx(idx==0) = 2;
@@ -190,8 +190,8 @@ pekel2_wet = cell2mat(arrayfun(@str2num,pekel2_wet,'UniformOutput',false));
 
 
 data = cell2mat(data(2:8)); %basin ID, change, deposition, erosion
-data_aqua = data(:,[3 5 7])/28; %aquamonitor change deposition erosion per year
-data_pekel = data(:,[2 4 6])/31; data_pekel(:,3) = data_pekel(:,3).*-1;
+data_aqua = data(:,[3 5 7])/20; %aquamonitor change deposition erosion per year,  (1984_240_2013_48 => 20 years)
+data_pekel = data(:,[2 4 6])/18; data_pekel(:,3) = data_pekel(:,3).*-1; %pekel water occurence change: mid between 1984-2000 and 2000-2020, is 18 years
 
 [~,idx] = ismember(data(:,1),ee.BasinID2);
 
