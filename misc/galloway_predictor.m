@@ -45,15 +45,10 @@ Qwave = (max(sedconv)-min(sedconv)); %maximum potential flux away from the river
 
 w_upstream = 6*discharge^0.5; %channel width upstream (m), example hydraulic geometry
 
-%slope estimate by wilkerson parker 2011, for the nature paper i simply extract the slope from SRTM data
-slope = 19.1*(sqrt(rel_dens)/1e-6)^-0.196 * discharge^-0.099 * g^-0.394 * d50^0.691; 
-
-%slope estimate based on equilibrium normal flow profile from gary parker ebook ch 14.
 qt = Qriver/1600/w_upstream; %m2/s
 cf = g/(chezy^2); %non dimensional friction from chezy
-at = 0.05/cf; %alpha_t from parker's ebook for engelund-hansen
 rb = (cf*(discharge/w_upstream)^2/g)^(1/3);
-slope = ((qt / (sqrt(rel_dens*g*d50)*d50)/at).^(1/2.5)*rel_dens*d50/rb).^1.5;
+slope = ((qt / (sqrt(rel_dens*g*d50)*d50)/(0.05/cf)).^(1/2.5)*rel_dens*d50/rb).^1.5; %slope estimate based on equilibrium normal flow profile from gary parker ebook ch 14.
 d_upstream = (cf*(discharge/w_upstream)^2/g/slope)^(1/3); %water depth at bankful
 
 beta = w_upstream/d_upstream; %channel_aspect_ratio
