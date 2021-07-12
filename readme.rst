@@ -5,7 +5,7 @@ GlobalDeltaChange
 .. image:: https://github.com/DeltaRCM/pyDeltaRCM/actions/workflows/build.yml/badge.svg
     :target: https://github.com/DeltaRCM/pyDeltaRCM/actions
 
-.. image:: https://badge.fury.io/py/pyDeltaRCM.svg
+.. image:: https://badge.fury.io/gh/jhnienhuis%2FGlobalDeltaChange.svg
     :target: https://badge.fury.io/py/pyDeltaRCM
 
 .. image:: https://codecov.io/gh/DeltaRCM/pyDeltaRCM/branch/develop/graph/badge.svg
@@ -14,7 +14,7 @@ GlobalDeltaChange
 .. image:: https://app.codacy.com/project/badge/Grade/1c137d0227914741a9ba09f0b00a49a7
     :target: https://www.codacy.com/gh/DeltaRCM/pyDeltaRCM?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DeltaRCM/pyDeltaRCM&amp;utm_campaign=Badge_Grade
 
-*GlobalDeltaChange* is a (1) theoretical framework to predict delta morphology and delta change, and (2) a set of codes to make this predictions on a global scale for ~11,000 deltas. Results and methods are described in Nienhuis et al., 2020 <https://www.nature.com/articles/s41586-019-1905-9>.
+*GlobalDeltaChange* is a (1) theoretical framework to predict delta morphology and delta change, and (2) a set of codes to make this predictions on a global scale for ~11,000 deltas. Results and methods are described in `Nienhuis et al., 2020 <https://www.nature.com/articles/s41586-019-1905-9>`_
 
 .. figure:: https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41586-019-1905-9/MediaObjects/41586_2019_1905_Fig1_HTML.png?as=webp
     
@@ -23,6 +23,9 @@ GlobalDeltaChange
 Documentation
 #############
 
+Versioning
+**********
+
 by Jaap Nienhuis, Utrecht University, 2019, version 1.0
 by Jaap Nienhuis, Utrecht University, 2021, version 2.0
 (Version 2.0 includes the newest land/water change data from GSW, local wave estimates from local wind fetch, submarine and subaerial elevation, river names, and more.)
@@ -30,15 +33,61 @@ by Jaap Nienhuis, Utrecht University, 2021, version 2.0
 Use the data
 #############
 
-
+The data can be viewed interactively in `a GEE App <https://jhnienhuis.users.earthengine.app/view/globaldelta>`_.
+Raw data is available here on github, formatted as `MATLAB .mat <https://github.com/jhnienhuis/GlobalDeltaChange/blob/master/GlobalDeltaData.mat>`_, `Shapefiles <https://github.com/jhnienhuis/GlobalDeltaChange/blob/master/export_data/GlobalDeltaMouth_shp.zip>`_, `NetCDF .nc <https://github.com/jhnienhuis/GlobalDeltaChange/blob/master/export_data/GlobalDeltaData.nc>`_, and `.kml <https://github.com/jhnienhuis/GlobalDeltaChange/blob/master/export_data/GlobalDeltaData.kml>`_ files. 
 
 Reproduce the data
 #############
 
-This readme explains how to generate a global delta dataset including relevant river/wave/tidal parameters that can be used to predict delta morphology.
-It also contains a lot of other useful functions to retrieve delta morphology, recent delta area change, and other delta attributes.
+To reproduce the GlobalDeltaData.mat file, run the following functions in this order: 
 
-Input datasets:
+Main functions
+**********
+(1) find_river_mouth.m
+    uses hydrosheds, DIVA, Durr, and SRTM to find all alluvial river mouths globally, furtheron referred to as deltas. Initiates the GlobalDeltaData.mat file
+
+(2) get_QRiver.m
+    uses WBMSED to get a pristine and disturbed sediment and water flux to each delta. Optionally you can use get_QRiver_timeseries to get daily QRiver and Discharge output
+
+(3) get_channel_slope.m
+    uses SRTM and hydrosheds to extract river elevation profiles for all deltas up to 30 meters elevation
+    
+(4) get_bathy_profile.m
+    uses etopo data to get steepest descent profiles of the underwater basin depths, from the river mouth to -100m
+    
+(5) get_Qwave.m
+    adds wave data to each delta from WaveWatch. For deltas that are (partially) sheltered from wave approach angles, it estimates a fetch based on shoreline orientation.
+    It uses the bretschneider fetch formula and WaveWatch wind data to estimate wave heights in sheltered locations. Uses get_global_fetch.m. 
+    Optionally you can use get_QWave_timeseries to get daily wave statistics, or get_QWave_future to get estimates of future wave heights (up to 2100).
+
+(6) get_Qtide.m
+    adds tide data to each delta, based on TOPEX data
+    
+(7) get_hydrobasins_id.m
+    adds identifiers from the new WWF HydroATLAS, HydroBasins, and HydroRIVERS datasets
+
+(8) add_names_to_deltas.m
+    Uses FAO data to find river names for deltas, where available.
+
+Supplemental functions
+**********
+
+land_area_change/get_aquamonitor_data
+    defines polygons for each river delta, and retrieves aquamonitor and earthsurfacewater explorer data to get delta coastal area land gain and loss within those regions. 
+    These data are noisy, so use with caution and with appropriate estimates of data uncertainty. The GEE code can be found at:
+    https://code.earthengine.google.com/21dd5f216c625b8696b4d9af6ee55215
+    We manually define polygons for the 100 largest deltas (see GlobalDeltaMax100.kml), and use proxies for delta area size for the remaining deltas.
+    
+export_data/create_kml, create_netcdf, create_shapefile, create_shapefile_deltaland
+    various functions to export relevant data to kml, netcdf, and shapefile formats
+    
+misc/galloway_predictor
+    function to plot output in the galloway triangle.
+    
+Input datasets
+#############
+
+Reproducing the data can be done with the following input datasets:
 
 - HydroSheds 15 arcsec drainage direction (DIR), flow accumulation (ACC), and basin outline (BAS) files
 source: https://www.hydrosheds.org/
@@ -66,43 +115,3 @@ source: http://www.fao.org/nr/water/aquamaps/
 
 (note, I don't store these here because of versioning and file size limitations. Please get in touch if you can't find them, I will send them to you)
 
-MAIN FUNCTIONS:
-(1) find_river_mouth.m
-    uses hydrosheds, DIVA, Durr, and SRTM to find all alluvial river mouths globally, furtheron referred to as deltas. Starts the GlobalDeltaData.mat file
-
-(2) get_QRiver.m
-    uses WBMSED to get a pristine and disturbed sediment and water flux to each delta. Optionally you can use get_QRiver_timeseries to get daily QRiver and Discharge output
-
-(3) get_channel_slope.m
-    uses SRTM and hydrosheds to extract river elevation profiles for all deltas up to 30 meters elevation
-    
-(4) get_bathy_profile.m
-    uses etopo data to get steepest descent profiles of the underwater basin depths, from the river mouth to -100m
-    
-(5) get_Qwave.m
-    adds wave data to each delta from WaveWatch. For deltas that are (partially) sheltered from wave approach angles, it estimates a fetch based on shoreline orientation.
-    It uses the bretschneider fetch formula and WaveWatch wind data to estimate wave heights in sheltered locations. Uses get_global_fetch.m. 
-    Optionally you can use get_QWave_timeseries to get daily wave statistics, or get_QWave_future to get estimates of future wave heights (up to 2100).
-
-(6) get_Qtide.m
-    adds tide data to each delta, based on TOPEX data
-    
-(7) get_hydrobasins_id.m
-    adds identifiers from the new WWF HydroATLAS, HydroBasins, and HydroRIVERS datasets
-
-(8) add_names_to_deltas.m
-    Uses FAO data to find river names for deltas, where available.
-
-SUPPLEMENTAL FUNCTIONS
-
-land_area_change/get_aquamonitor_data
-    defines polygons for each river delta, and retrieves aquamonitor and earthsurfacewater explorer data to get delta coastal area land gain and loss within those regions. 
-    These data are noisy, so use with caution and with appropriate estimates of data uncertainty. The GEE code can be found at:
-    https://code.earthengine.google.com/21dd5f216c625b8696b4d9af6ee55215
-    We manually define polygons for the 100 largest deltas (see GlobalDeltaMax100.kml), and use proxies for delta area size for the remaining deltas.
-    
-export_data/create_kml, create_netcdf, create_shapefile, create_shapefile_deltaland
-    various functions to export relevant data to kml, netcdf, and shapefile formats
-    
-misc/galloway_predictor
-    function to plot output in the galloway triangle.
