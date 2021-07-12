@@ -115,3 +115,8 @@ source: http://www.fao.org/nr/water/aquamaps/
 
 (note, I don't store these here because of versioning and file size limitations. Please get in touch if you can't find them, I will send them to you)
 
+
+
+.. image:: https://api.codacy.com/project/badge/Grade/544c830b2b324caf9710179f23f1e42c
+   :alt: Codacy Badge
+   :target: https://app.codacy.com/gh/jhnienhuis/GlobalDeltaChange?utm_source=github.com&utm_medium=referral&utm_content=jhnienhuis/GlobalDeltaChange&utm_campaign=Badge_Grade_Settings
