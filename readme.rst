@@ -1,19 +1,12 @@
 **************
 GlobalDeltaChange
 **************
-
-.. image:: https://github.com/DeltaRCM/pyDeltaRCM/actions/workflows/build.yml/badge.svg
-    :target: https://github.com/DeltaRCM/pyDeltaRCM/actions
-
 .. image:: https://badge.fury.io/gh/jhnienhuis%2FGlobalDeltaChange.svg
-    :target: https://badge.fury.io/py/pyDeltaRCM
+    :target: https://badge.fury.io/gh/jhnienhuis%2FGlobalDeltaChange
 
-.. image:: https://codecov.io/gh/DeltaRCM/pyDeltaRCM/branch/develop/graph/badge.svg
-  :target: https://codecov.io/gh/DeltaRCM/pyDeltaRCM
-
-.. image:: https://app.codacy.com/project/badge/Grade/1c137d0227914741a9ba09f0b00a49a7
-    :target: https://www.codacy.com/gh/DeltaRCM/pyDeltaRCM?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DeltaRCM/pyDeltaRCM&amp;utm_campaign=Badge_Grade
-
+.. image:: https://app.codacy.com/project/badge/Grade/0ae4939efdcd43b9b70e3ac605619f50
+    :target: https://www.codacy.com/gh/jhnienhuis/GlobalDeltaChange/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jhnienhuis/GlobalDeltaChange&amp;utm_campaign=Badge_Grade
+    
 *GlobalDeltaChange* is a (1) theoretical framework to predict delta morphology and delta change, and (2) a set of codes to make this predictions on a global scale for ~11,000 deltas. Results and methods are described in `Nienhuis et al., 2020 <https://www.nature.com/articles/s41586-019-1905-9>`_
 
 .. figure:: https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41586-019-1905-9/MediaObjects/41586_2019_1905_Fig1_HTML.png?as=webp
