@@ -12,7 +12,7 @@ rel_contrib = [1]; %relative contribution of waves
 %a0 = 1.5; %tidal amplitude m
 omega0 = 1.4e-4; %tidal frequency in rad/s (semidiurnal = 1.4e-4)
 rel_dens = 1.65; %immersed density
-d50 = 1e-4; %grain size in m
+d50 = 2e-4; %grain size in m
 g = 9.81; %gravity
 chezy = 55; %roughness
 
@@ -38,6 +38,7 @@ sedtrans = 2650 * (1-0.4) * k_wave .*  (cos(AngArray).^1.2) .* sin(AngArray);
 sedconv = conv(fliplr(energy),sedtrans,'same'); % sedconv in kg/s
 Qwave = (max(sedconv)-min(sedconv)); %maximum potential flux away from the river mouth
 
+Qwave_simple = 2*2650 * (1-0.4) * k_wave *hs^(12/5).*tp^0.2.*0.47;
 
 %% qtide
 %see also this table that is a supplementary table for the 2018 GRL paper 
@@ -48,10 +49,10 @@ w_upstream = 6*discharge^0.5; %channel width upstream (m), example hydraulic geo
 qt = Qriver/1600/w_upstream; %m2/s
 cf = g/(chezy^2); %non dimensional friction from chezy
 rb = (cf*(discharge/w_upstream)^2/g)^(1/3);
-slope = ((qt / (sqrt(rel_dens*g*d50)*d50)/(0.05/cf)).^(1/2.5)*rel_dens*d50/rb).^1.5; %slope estimate based on equilibrium normal flow profile from gary parker ebook ch 14.
+slope = 5e-5; %((qt / (sqrt(rel_dens*g*d50)*d50)/(0.05/cf)).^(1/2.5)*rel_dens*d50/rb).^1.5; %slope estimate based on equilibrium normal flow profile from gary parker ebook ch 14.
 d_upstream = (cf*(discharge/w_upstream)^2/g/slope)^(1/3); %water depth at bankful
 
-beta = w_upstream/d_upstream; %channel_aspect_ratio
+beta = 100; %w_upstream/d_upstream; %channel_aspect_ratio at mouth
 
 k_tide = omega0/(sqrt(d50/0.2)*rel_dens*chezy*pi); %cross-sectional area relationship k, see nienhuis GRL 2018
 d_length = d_upstream / slope; %tidal intrusion length estimate (m)
