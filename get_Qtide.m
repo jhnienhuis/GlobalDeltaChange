@@ -1,6 +1,6 @@
 function get_Qtide
 %% Get tidal fluxes
-load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'])
+load([gdrive filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'])
 
 direc = 'D:\OneDrive - Universiteit Utrecht\Tides\';
 %lat_tide = ncread([direc 'hf.m2_tpxo8_atlas_30c_v1.nc'],'lat_z');
@@ -85,7 +85,7 @@ width_upstream = 6.5*Discharge_prist.^0.5; %edmonds/slingerland
 depth_upstream = 0.586*Discharge_prist.^0.33; %edmonds/slingerland
 beta = width_upstream./depth_upstream;
 
-t_length = mean([2*tide_a,depth_upstream],2)./channel_slope;
+t_length = 0.5.*mean([2.*tide_a,depth_upstream],2)./channel_slope;
 
 k = tide_omega./(pi*sqrt(0.2*1e-4)*1.65*55);
 

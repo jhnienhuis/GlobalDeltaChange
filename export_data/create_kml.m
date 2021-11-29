@@ -1,5 +1,5 @@
 function create_kml
-load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'],'MouthLat','MouthLon','delta_name','BasinID2','QRiver_prist','QRiver_dist','QWave','QTide')
+load([gdrive filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'],'MouthLat','MouthLon','delta_name','BasinID2','QRiver_prist','QRiver_dist','QWave','QTide')
 %load(f)
 
 [~,mor_pred] = max([QWave,QRiver_prist,QTide],[],2);
