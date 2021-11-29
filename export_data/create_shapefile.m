@@ -1,8 +1,8 @@
 function create_shapefile
 
 % load all deltas
-load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'])
-ee = load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'land_area_change' filesep 'GlobalDeltaData_AreaChange.mat']);
+load([gdrive filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'])
+ee = load([gdrive filesep 'github' filesep 'GlobalDeltaChange' filesep 'land_area_change' filesep 'GlobalDeltaData_AreaChange.mat']);
 
 MouthLon = rem(MouthLon+360,360);
 mouthboth = MouthLon+1i*MouthLat;
@@ -140,7 +140,7 @@ zip([fname '_shp'],{[fname '.dbf'],[fname '.shx'],[fname '.shp']})
 delete([fname '.dbf'],[fname '.shx'],[fname '.shp'])
 
 %% create shapefile for earth engine app
-p = geoshape(basins_lat,basins_lon,'BasinID2',double(BasinID2),'BasinArea',BasinArea,'Dis_pris',Discharge_prist,'Dis_dist',Discharge_dist,'delta_name',delta_name,'Dis_tide',Discharge_tide,...
+p = geoshape(basins_lat,basins_lon,'BasinID2',double(BasinID2),'BasinArea',BasinArea,'Dis_pris',Discharge_prist,'Dis_dist',Discharge_dist,'Dis_tide',Discharge_tide,...
     'MouthLat',MouthLat,'MouthLon',MouthLon,'QRiver_dis',QRiver_dist,'QRiver_pri',QRiver_prist,'QTide',QTide,'QWave',QWave);
 
 p.rate = ee.net_pekel2;
