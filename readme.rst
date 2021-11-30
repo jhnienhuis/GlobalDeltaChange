@@ -118,10 +118,17 @@ The accuracy of the global delta dataset is assessed through comparison against 
 We compare the total number of predicted deltas (~11,000) against field observations of deltas that meet our definition (see the publication). We also compare the predicted morphology and give accuracy for individual predictions and for the global total.
 Lastly, we compare the delta land area change against a set of other datasets and observations.
 
-.. csv-table:: Prediction/Observed confusion matrix
-   :file: ..\validation\global_delta_confusionmat.csv
-   :widths: 30, 70
-   :header-rows: 1
++-----------+------------+------------+-----------+---------+
+|           |              Observed                         |
++===========+============+============+===========+=========+
+|           |            | Wave       | River     | Tide    |
++-----------+------------+------------+-----------+---------+
+|           | Wave       | 1          |  2        | 3       |
++-----------+------------+------------+-----------+---------+
+| Predicted | River      | 6          | 4         | 5       |
++-----------+------------+------------+-----------+---------+
+|           | Tide       |  7         | 8         | 7       |
++-----------+------------+------------+-----------+---------+
 
 
 
