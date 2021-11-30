@@ -72,10 +72,13 @@ land_area_change/get_aquamonitor_data
     We manually define polygons for the 100 largest deltas (see GlobalDeltaMax100.kml), and use proxies for delta area size for the remaining deltas.
     
 export_data/create_kml, create_netcdf, create_shapefile, create_shapefile_deltaland
-    various functions to export relevant data to kml, netcdf, and shapefile formats
+    various functions to export relevant data to kml, netcdf, xlsx, and shapefile formats
     
 misc/galloway_predictor
     function to plot output in the galloway triangle.
+
+validation/global_delta_validation
+    function to compare predictions against observations and put the resulting accuracy in the readme.rst file on github
     
 Input datasets
 #############
@@ -107,4 +110,20 @@ source: https://lpdaac.usgs.gov/products/srtmgl1v003/
 source: http://www.fao.org/nr/water/aquamaps/
 
 (note, I don't store these here because of versioning and file size limitations. Please get in touch if you can't find them, I will send them to you)
+
+Global Delta Accuracy
+#############
+
+The accuracy of the global delta dataset is assessed through comparison against field measurements and other datasets.
+We compare the total number of predicted deltas (~11,000) against field observations of deltas that meet our definition (see the publication). We also compare the predicted morphology and give accuracy for individual predictions and for the global total.
+Lastly, we compare the delta land area change against a set of other datasets and observations.
+
+.. csv-table:: Prediction/Observed confusion matrix
+   :file: ..\validation\global_delta_confusionmat.csv
+   :widths: 30, 70
+   :header-rows: 1
+
+
+
+
 
