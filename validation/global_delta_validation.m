@@ -27,7 +27,7 @@ d2 = v.mor(idx~=0);
 c = confusionmat(d1,d2);
 
 tc = table(morphology,c,'VariableNames',["Predicted","Observed"]);
-writetable(tc,'global_delta_confusionmat.csv')
+
 
 
 %extra bootstrap
@@ -48,6 +48,23 @@ writetable(tb,'global_delta_accuracy.csv')
 
 ta = table(morphology,round(100*c_unc)','VariableNames',["Morphology","Prediction accuracy (%)"]);
 
+%% adjust readme file
+
+txt = fileread([f 'readme.rst']);
+% Split into lines
+txt = regexp(txt, '\r\n', 'split');
+% Find lines starting with certain letters
+w1 = startsWith(txt, "|           | Wave       |");
+w2 = startsWith(txt, "| Predicted | River      |");
+w3 = startsWith(txt, "|           | Tide       |");
+txt(w1) = replace(txt(w1),extract(txt(w1),digitsPattern)',cellstr(num2str(c(1,:)'))');
+txt(w2) = replace(txt(w2),extract(txt(w2),digitsPattern)',cellstr(num2str(c(2,:)'))');
+txt(w3) = replace(txt(w3),extract(txt(w3),digitsPattern)',cellstr(num2str(c(3,:)'))');
+
+% Write to new file
+fid = fopen([f 'readme.rst'], 'wt');
+fprintf(fid, '%s\n', txt{:});
+fclose(fid);
 
 
 
