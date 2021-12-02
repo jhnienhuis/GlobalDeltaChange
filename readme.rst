@@ -125,11 +125,11 @@ For deltas on Madagascar, and additional deltas drawn at random from the dataset
 +===========+============+============+===========+=========+
 |           |            | Wave       | River     | Tide    |
 +-----------+------------+------------+-----------+---------+
-|           | Wave       | 227        |  010      | 032     |
+|           | Wave       | 244        |  011      | 033     |
 +-----------+------------+------------+-----------+---------+
-| Predicted | River      | 012        |  014      | 012     |
+| Predicted | River      | 020        |  025      | 018     |
 +-----------+------------+------------+-----------+---------+
-|           | Tide       | 002        |  001      | 002     |
+|           | Tide       | 003        |  001      | 017     |
 +-----------+------------+------------+-----------+---------+
 
 For individual predictions, we retrieve the following accuracies
@@ -137,9 +137,9 @@ For individual predictions, we retrieve the following accuracies
 ================    =======================
 Morphology          Prediction accuracy (%)
 ----------------    -----------------------
-Wave dominated      92%
-River dominated     54%
-Tide dominated      22%
+Wave dominated               89%
+River dominated              65%
+Tide dominated               23%
 ================    =======================
 
 Scaling up to the globe, we retrieve the following estimates for the global number of deltas and their morphologies
@@ -147,11 +147,27 @@ Scaling up to the globe, we retrieve the following estimates for the global numb
 ================    ==============  =======================
 Morphology          Global number   Uncertainty (+/- 1std)
 ----------------    --------------  -----------------------
-All deltas            10848             0403
-Wave dominated        08245             0653 
-River dominated       01825             0841
-Tide dominated        00778             0607
+All deltas            10848             0371
+Wave dominated        08245             0894 
+River dominated       01825             0633
+Tide dominated        00778             0601
 ================    ==============  =======================
+
+The accuracy of our Aquamonitor-derived land area change estimats for global deltas is assessed by comparison against other models, and individual delta assessments.
+
+================    ==============  =======================
+Selection            Percentage of      Expressed in 
+                     delta change       Area (km2/yr)  
+----------------    --------------  -----------------------
+Detection error         001%                001.00
+Mapping error           153%                152.64
+Intermodel error        092%                092.16
+----------------    --------------  -----------------------
+One delta (mean)        246%                245.80
+All deltas (SE)         103%                103.16 
+================    ==============  =======================
+
+
 
 
 
