@@ -114,9 +114,11 @@ source: http://www.fao.org/nr/water/aquamaps/
 Global Delta Accuracy
 #############
 
-The accuracy of the global delta dataset is assessed through comparison against field measurements and other datasets.
-We compare the total number of predicted deltas (~11,000) against field observations of deltas that meet our definition (see the publication). We also compare the predicted morphology and give accuracy for individual predictions and for the global total.
-Lastly, we compare the delta land area change against a set of other datasets and observations.
+The accuracy of the global delta dataset is assessed through comparison against field measurements and other datasets, scipts are validation data are in the subfolder "validation".
+
+We compare the total number of predicted deltas (~11,000) against field observations of deltas that meet our definition (see the publication). We also compare the predicted morphology and give accuracy for individual predictions and for the global total. Lastly, we compare the delta land area change against a set of other datasets and observations.
+
+For deltas on Madagascar, and additional deltas drawn at random from the dataset, we obtain the following confusion matrix:
 
 +-----------+------------+------------+-----------+---------+
 |           |              Observed                         |
@@ -130,6 +132,26 @@ Lastly, we compare the delta land area change against a set of other datasets an
 |           | Tide       | 002        |  001      | 002     |
 +-----------+------------+------------+-----------+---------+
 
+For individual predictions, we retrieve the following accuracies
+
+================    =======================
+Morphology          Prediction accuracy (%)
+----------------    -----------------------
+Wave dominated      92%
+River dominated     54%
+Tide dominated      22%
+================    =======================
+
+Scaling up to the globe, we retrieve the following estimates for the global number of deltas and their morphologies
+
+================    ==============  =======================
+Morphology          Global number   Uncertainty (+/- 1std)
+----------------    --------------  -----------------------
+All deltas            10848             0403
+Wave dominated        08245             0647 
+River dominated       01825             0840
+Tide dominated        00778             0606
+================    ==============  =======================
 
 
 
