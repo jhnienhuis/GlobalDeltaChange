@@ -42,31 +42,45 @@ c_unc = (diag(c_rel)'./sum(c_rel))-c_unc_btstrp;
 s_a = (1-c_unc).*histcounts(mor_pred);
 
 rNames = ["Number of Deltas";morphology];
-    
-tb = table(rNames,[numel(BasinID),histcounts(mor_pred)]',round([d_unc,s_a]'),'VariableNames',["Morphology","Global number","Uncertainty"]);
-writetable(tb,'global_delta_accuracy.csv')
+rvalue = [[numel(BasinID),histcounts(mor_pred)]',[round([d_unc,s_a]')]];    
 
 ta = table(morphology,round(100*c_unc)','VariableNames',["Morphology","Prediction accuracy (%)"]);
+tb = table(rNames,rvalue,'VariableNames',["Morphology","Global number +/- Uncertainty"]);
 
 %% adjust readme file
 
 txt = fileread([f 'readme.rst']);
 % Split into lines
 txt = regexp(txt, '\r\n', 'split');
-% Find lines starting with certain letters
-w1 = startsWith(txt, "|           | Wave       |");
-w2 = startsWith(txt, "| Predicted | River      |");
-w3 = startsWith(txt, "|           | Tide       |");
-txt(w1) = replace(txt(w1),extract(txt(w1),digitsPattern)',cellstr(num2str(c(1,:)'))');
-txt(w2) = replace(txt(w2),extract(txt(w2),digitsPattern)',cellstr(num2str(c(2,:)'))');
-txt(w3) = replace(txt(w3),extract(txt(w3),digitsPattern)',cellstr(num2str(c(3,:)'))');
+% Find lines starting with certain letters with confusion matrix
+w(1) = find(startsWith(txt, "|           | Wave       |"));
+w(2) = find(startsWith(txt, "| Predicted | River      |"));
+w(3) = find(startsWith(txt, "|           | Tide       |"));
+
+for ii=1:3,    
+    txt(w(ii)) = replace(txt(w(ii)),extract(txt(w(ii)),digitsPattern(3))',cellstr(num2str(c(ii,:)','%03.0f'))');
+end
+
+% Find lines starting with certain letters with individual predictions
+w = find(contains(txt,"Prediction accuracy (%)"));
+w(1:3) = w+[2 3 4];
+
+for ii=1:3,    
+    txt(w(ii)) = replace(txt(w(ii)),extract(txt(w(ii)),digitsPattern(2))',cellstr(num2str(round(100*c_unc(ii)),'%02.0f'))');
+end
+
+%add global uncertainty of morphology
+w = find(contains(txt,"Uncertainty (+/- 1std)"));
+w = w+[2 3 4 5];
+
+for ii=1:4,    
+    txt(w(ii)) = replace(txt(w(ii)),extract(txt(w(ii)),digitsPattern(4,5))',[{num2str(rvalue(ii,1),'%05.0f')},{num2str(rvalue(ii,2),'%04.0f')}]);
+end
 
 % Write to new file
 fid = fopen([f 'readme.rst'], 'wt');
 fprintf(fid, '%s\n', txt{:});
 fclose(fid);
-
-
 
 
 
@@ -95,4 +109,8 @@ all = sum(ee.net_aqua)*28
 se_all = sqrt(28*(se_1+se_2+se_3))*sqrt(numel(BasinID))
 
 se_all_net = sqrt(2*(sqrt(28*(se_1+se_2+se_3))*sqrt(numel(BasinID))).^2)
+
+
+
+tb = table(rNames,rvalue,'VariableNames',["Morphology","Global number +/- Uncertainty"]);
 

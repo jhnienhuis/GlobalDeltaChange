@@ -148,10 +148,11 @@ Scaling up to the globe, we retrieve the following estimates for the global numb
 Morphology          Global number   Uncertainty (+/- 1std)
 ----------------    --------------  -----------------------
 All deltas            10848             0403
-Wave dominated        08245             0647 
-River dominated       01825             0840
-Tide dominated        00778             0606
+Wave dominated        08245             0653 
+River dominated       01825             0841
+Tide dominated        00778             0607
 ================    ==============  =======================
+
 
 
 
