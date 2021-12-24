@@ -60,7 +60,7 @@ Main functions
     adds identifiers from the new WWF HydroATLAS, HydroBasins, and HydroRIVERS datasets
 
 (8) add_names_to_deltas.m
-    Uses FAO data to find river names for deltas, where available.
+    Uses FAO data to find river names for deltas, where available. Needs updating.
 
 Supplemental functions
 **********
