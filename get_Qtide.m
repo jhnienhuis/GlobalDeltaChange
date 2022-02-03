@@ -16,7 +16,7 @@ p1 = int32(abs(single(ncread([direc 'hf.p1_tpxo8_atlas_30c_v1.nc'],'hRe'))+1i*si
 q1 = int32(abs(single(ncread([direc 'hf.q1_tpxo8_atlas_30c_v1.nc'],'hRe'))+1i*single(ncread([direc 'hf.q1_tpxo8_atlas_30c_v1.nc'],'hIm'))));
 n2 = int32(abs(single(ncread([direc 'hf.n2_tpxo8_atlas_30c_v1.nc'],'hRe'))+1i*single(ncread([direc 'hf.n2_tpxo8_atlas_30c_v1.nc'],'hIm'))));
 
-
+ 
 
 %hamax = reshape(max([m2(:),s2(:),k1(:),o1(:)],[],2),size(s2));
 hamax = (m2+m4+s2+k1+k2+o1+p1+q1+n2)/2;
