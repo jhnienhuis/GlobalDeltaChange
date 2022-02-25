@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Car_MagdalenaAtBocasDeCeniza.kml</name>
+	<open>1</open>
+	<Style id="s_ylw-pushpin7">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin9">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin9</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl901</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin7001">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin8">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin7</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl11</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin8001">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin7001</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl03001</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin9">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl90">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl11">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl901">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin90">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin91</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl90</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin91">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl03001">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Placemark>
+		<name>Car_MagdalenaAtBocasDeCeniza_GenShoreline</name>
+		<styleUrl>#m_ylw-pushpin8</styleUrl>
+		<LineString>
+			<tessellate>1</tessellate>
+			<coordinates>
+				-74.81442021206871,11.09146011223707,0 -75.03115639103747,10.95170088055985,0 
+			</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<name>Car_MagdalenaAtBocasDeCeniza_Profile</name>
+		<styleUrl>#m_ylw-pushpin9</styleUrl>
+		<LineString>
+			<tessellate>1</tessellate>
+			<coordinates>
+				-74.85484517131695,11.14299061088139,0 -74.84864104409456,11.11359091173036,0 -74.84672260739754,11.08914436517614,0 -74.8466919312809,11.08782171838811,0 -74.84433058982222,11.0733151544192,0 -74.83793289052049,11.05889999669609,0 -74.82691126505119,11.04920545734371,0 -74.81110084551872,11.03630834648833,0 -74.78577935033725,11.01899659013103,0 -74.77200670744777,11.00475883231788,0 -74.76087273545869,10.98848248871458,0 -74.75585742390383,10.9747211962182,0 -74.75404536929608,10.95362919845821,0 -74.75028891921032,10.93588303844741,0 -74.74130105073608,10.9248530242929,0 -74.74061420055199,10.92420771774874,0 -74.7310570711402,10.91781366756277,0 -74.71796914542875,10.90357365562493,0 -74.7129763467,10.89047954658466,0 -74.71336006271312,10.87726579614653,0 -74.72258131154854,10.86847658188801,0 -74.73707905695341,10.8549487380889,0 -74.74212495665495,10.83964324634018,0 -74.73837454077179,10.82188930344717,0 -74.73729856572506,10.8034154242779,0 -74.73661174414427,10.80277104597782,0 -74.72832732165361,10.78016259236806,0 -74.72282307968915,10.75928390556151,0 -74.72276173783906,10.72779679893546,0 -74.72608043698123,10.70673166483492,0 -74.72606694319424,10.70611449718191,0 -74.72079083483423,10.66609364493311,0 -74.7245539623364,10.63573888351624,0 -74.72394195052473,10.60733733638826,0 -74.72328450633597,10.59360077167895,0 -74.72325197580312,10.59211175024599,0 -74.7179415108539,10.58081133395638,0 -74.71651222973082,10.56147476852336,0 -74.72843958160622,10.55126731180034,0 -74.74904077758313,10.54383657709241,0 -74.76553062652832,10.53250702524445,0 -74.76603724457264,10.53249516559209,0 -74.78896626785824,10.51098805920771,0 -74.80167831936268,10.49310208586959,0 -74.81183572985326,10.46907969386345,0 -74.81871579117643,10.44987429434104,0 -74.82725314293093,10.41723073876133,0 
+			</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<name>Car_MagdalenaAtBocasDeCeniza_wu</name>
+		<styleUrl>#m_ylw-pushpin90</styleUrl>
+		<LineString>
+			<tessellate>1</tessellate>
+			<coordinates>
+				-74.72757664626978,10.62586134657437,0 -74.72122270430329,10.6249983371799,0 
+			</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<name>Car_MagdalenaAtBocasDeCeniza_LeftFlank</name>
+		<styleUrl>#m_ylw-pushpin8001</styleUrl>
+		<LineString>
+			<tessellate>1</tessellate>
+			<coordinates>
+				-74.89374577945385,11.04202699073071,0 -74.8566845489503,11.04932336456375,0 
+			</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<name>Car_MagdalenaAtBocasDeCeniza_RightFlank</name>
+		<styleUrl>#m_ylw-pushpin8001</styleUrl>
+		<LineString>
+			<tessellate>1</tessellate>
+			<coordinates>
+				-74.7771475531307,11.07695309885775,0 -74.83150657690148,11.09814759394319,0 
+			</coordinates>
+		</LineString>
+	</Placemark>
+	<Placemark>
+		<name>Car_MagdalenaAtBocasDeCeniza_wm</name>
+		<styleUrl>#m_ylw-pushpin90</styleUrl>
+		<LineString>
+			<tessellate>1</tessellate>
+			<coordinates>
+				-74.84316183268673,11.06224520990543,0 -74.83864450360599,11.06518980904172,0 
+			</coordinates>
+		</LineString>
+	</Placemark>
+</Document>
+</kml>
