@@ -68,7 +68,7 @@ subplot(2,2,3)
 out = (yn>(xn.*2*sqrt(3/4))' | yn>(2*sqrt(3/4).*(1-xn)'))';
 fn(out) = nan;
 fn(fn>50) = nan;
-contourf(xgrid,ygrid,fn,[0:5:50],'ShowText','on')
+contour(xgrid,ygrid,fn,[0:5:50],'ShowText','on')
 colormap(flipud(cbrewer('div', 'RdYlBu', 64)))
 caxis([0,50])
 set(gca,'Layer','top')
@@ -86,7 +86,7 @@ subplot(2,2,4)
 [fn,xgrid,ygrid] = gridfit(x0,y0,w_downstream./w_upstream,xn,yn); %'interp','bilinear',
 out = (yn>(xn.*2*sqrt(3/4))' | yn>(2*sqrt(3/4).*(1-xn)'))';
 fn(out) = nan;
-contourf(xgrid,ygrid,fn,[1:0.1:2],'ShowText','on')
+contour(xgrid,ygrid,fn,[1:0.1:2],'ShowText','on')
 colormap(flipud(cbrewer('div', 'RdYlBu', 64)))
 caxis([1,2])
 set(gca,'Layer','top')
