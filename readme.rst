@@ -1,11 +1,18 @@
 **************
 GlobalDeltaChange
 **************
+
+.. image:: https://zenodo.org/badge/191585237.svg
+   :target: https://zenodo.org/badge/latestdoi/191585237
+   
+   
 .. image:: https://badge.fury.io/gh/jhnienhuis%2FGlobalDeltaChange.svg
     :target: https://badge.fury.io/gh/jhnienhuis%2FGlobalDeltaChange
 
 .. image:: https://app.codacy.com/project/badge/Grade/0ae4939efdcd43b9b70e3ac605619f50
     :target: https://www.codacy.com/gh/jhnienhuis/GlobalDeltaChange/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jhnienhuis/GlobalDeltaChange&amp;utm_campaign=Badge_Grade
+    
+
     
 *GlobalDeltaChange* is a (1) theoretical framework to predict delta morphology and delta change, and (2) a set of codes to make this predictions on a global scale for ~11,000 deltas. Results and methods are described in `Nienhuis et al., 2020 <https://www.nature.com/articles/s41586-019-1905-9>`_
 
