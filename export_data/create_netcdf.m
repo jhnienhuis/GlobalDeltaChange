@@ -1,6 +1,6 @@
 function create_netcdf
 
-out = load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat']);
+out = load([gdrive filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat']);
 
 
 

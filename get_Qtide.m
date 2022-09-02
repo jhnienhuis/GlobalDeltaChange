@@ -1,6 +1,6 @@
 function get_Qtide
 %% Get tidal fluxes
-load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'])
+load([gdrive filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'])
 
 direc = 'D:\OneDrive - Universiteit Utrecht\Tides\';
 %lat_tide = ncread([direc 'hf.m2_tpxo8_atlas_30c_v1.nc'],'lat_z');
@@ -16,7 +16,7 @@ p1 = int32(abs(single(ncread([direc 'hf.p1_tpxo8_atlas_30c_v1.nc'],'hRe'))+1i*si
 q1 = int32(abs(single(ncread([direc 'hf.q1_tpxo8_atlas_30c_v1.nc'],'hRe'))+1i*single(ncread([direc 'hf.q1_tpxo8_atlas_30c_v1.nc'],'hIm'))));
 n2 = int32(abs(single(ncread([direc 'hf.n2_tpxo8_atlas_30c_v1.nc'],'hRe'))+1i*single(ncread([direc 'hf.n2_tpxo8_atlas_30c_v1.nc'],'hIm'))));
 
-
+ 
 
 %hamax = reshape(max([m2(:),s2(:),k1(:),o1(:)],[],2),size(s2));
 hamax = (m2+m4+s2+k1+k2+o1+p1+q1+n2)/2;
@@ -85,7 +85,7 @@ width_upstream = 6.5*Discharge_prist.^0.5; %edmonds/slingerland
 depth_upstream = 0.586*Discharge_prist.^0.33; %edmonds/slingerland
 beta = width_upstream./depth_upstream;
 
-t_length = mean([2*tide_a,depth_upstream],2)./channel_slope;
+t_length = 0.5.*mean([2.*tide_a,depth_upstream],2)./channel_slope;
 
 k = tide_omega./(pi*sqrt(0.2*1e-4)*1.65*55);
 

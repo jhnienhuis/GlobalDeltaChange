@@ -8,12 +8,11 @@ load('GlobalDeltaData.mat','MouthLon','MouthLat');
 %[cz, refvec] = etopo('D:\OneDrive - Universiteit Utrecht\GlobalDEM\',5,[-90 90]);
 %cz = cz(:,[(180*refvec(1)+1):end 1:(180*refvec(1))]);
 
-load('D:\OneDrive - Universiteit Utrecht\GlobalDEM\SRTM15plus_int8.mat','cz');
-cz(cz>0) = 0;
-cz = double(cz);
+load('D:\OneDrive - Universiteit Utrecht\GlobalDEM\SRTM15plus_int8_sea.mat','cz');
+cz = -double(cz);
 refvec = [240,90,-180];
 
-rsample = 20; cz = cz(1:rsample:end,1:rsample:end); refvec = [60/(0.25*rsample) 90 -180];
+rsample = 2; cz = cz(1:rsample:end,1:rsample:end); refvec = [60/(0.25*rsample) 90 -180];
 
 
 
@@ -51,7 +50,7 @@ delta_loc = (refvec(1)*MouthLon)+1i.*(refvec(1).*(MouthLat+90));
 
 
 %do profiles for these contour lines
-shelf_lines = 0:-5:-120;
+shelf_lines = 0:-5:-150;
 
 %pre-allocate matrices
 shelf_len = zeros(length(delta_loc),length(shelf_lines));
@@ -100,9 +99,9 @@ shelf_len_lon = shelf_len_lon./refvec(1);
 shelf_len = cumsum(shelf_len,2).*1000; %turn to m
 
 %remove distances away from shoreline larger than 400km? (great lakes etc)
-shelf_len_lat(shelf_len>5e5) = nan;
-shelf_len_lon(shelf_len>5e5) = nan;
-shelf_len(shelf_len>5e5) = nan;
+shelf_len_lat(shelf_len>1e6) = nan;
+shelf_len_lon(shelf_len>1e6) = nan;
+shelf_len(shelf_len>1e6) = nan;
 
 % plot a particular transect
 %figure

@@ -63,10 +63,14 @@ BasinID = (10*BasinID+Continent);
 DeltaRadius = sqrt(1.07.*Discharge_prist.^0.7.*QRiver_prist.^0.45/pi/100);
 DeltaBuffer = 1000+(DeltaRadius*1000);
 
-gee_shapefile = mapshape(delta_shoreline_lon,delta_shoreline_lat,'BasinID',(BasinID),'Buffer',(DeltaBuffer));
+gee_shapefile = mapshape(delta_shoreline_lon,delta_shoreline_lat,'BasinID',(BasinID),'Buffer',(DeltaBuffer).*0.5);
 
-shapewrite(gee_shapefile,'GlobalDeltaShorelineData.shp')
+fname = 'GlobalDeltaShorelineData_p50';
 
+shapewrite(gee_shapefile,[fname '.shp']);
+
+zip([fname],{[fname '.dbf'],[fname '.shx'],[fname '.shp']})
+delete([fname '.dbf'],[fname '.shx'],[fname '.shp'])
 %% Create shapefile for manual data for 100 largest deltas
 load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'],'MouthLon','MouthLat','BasinID2','QRiver_prist');
 %first write kml file
@@ -176,6 +180,7 @@ save([f 'land_area_change' filesep 'GlobalDeltaData_AreaChange.mat'],'-struct','
 
 clr
 f = [dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep];
+load([f 'GlobalDeltaData.mat'],'MouthLon','MouthLat','Continent');
 ee = load([f 'land_area_change' filesep 'GlobalDeltaData_AreaChange.mat']);
 
 %file exported from earth engine
@@ -244,6 +249,12 @@ for ii=1:size(dry_corr,1),
     %accumarray(ee.net_pekel2_t'-1984,dry_corr(ii,:)',[],@nanmean);
     
 end
+
+%merge pekel 1 and pekel 2 for arctic data and remove caspian data
+ee.net_aqua((MouthLon>46 & MouthLon<56 & MouthLat>34 & MouthLat<48)) = 0;
+ee.net_pekel((MouthLon>46 & MouthLon<56 & MouthLat>34 & MouthLat<48)) = 0;
+ee.net_pekel(Continent==8) = ee.net_pekel2(Continent==8);
+
 
 %add to .mat file
 save([f 'land_area_change' filesep 'GlobalDeltaData_AreaChange.mat'],'-struct','ee');
