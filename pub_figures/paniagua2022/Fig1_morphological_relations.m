@@ -56,6 +56,7 @@ end
 %[Qriver_log,Qwave_log,Qtide_log] = DeltaLogMaker(Qriver.*ones(size(Qwave)),Qwave,Qtide);
 s = Qriver+Qwave+Qtide;
 [Qriver,Qwave,Qtide] = deal(Qriver./s,Qwave./s,Qtide./s);
+
 y0 = Qriver*sin(deg2rad(60));
 x0 = Qtide + y0*cot(deg2rad(60));
 
@@ -101,3 +102,31 @@ ylabel(h,'channel widening')
 
 set(gca, 'FontSize', 8,'FontName','Helvetica')
 saveas(gcf,'Fig1_morphological_relations.svg')
+
+%% plot error
+%pred
+rr = 1; %rand(100,1);
+rt = 0; %rand(100,1);
+rw = 0; %rand(100,1);
+s = rr+rt+rw;
+[rr,rw,rt] = deal(rr./s,rw./s,rt./s);
+
+
+y = rr.*sin(deg2rad(60));
+x = rt + y.*cot(deg2rad(60));
+
+%obs
+rr0 = 0; %rand(100,1);
+rt0 = 0; %rand(100,1);
+rw0 = 1; %rand(100,1);
+s = rr0+rt0+rw0;
+[rr0,rw0,rt0] = deal(rr0./s,rw0./s,rt0./s);
+
+
+y0 = rr0*sin(deg2rad(60));
+x0 = rt0 + y0*cot(deg2rad(60));
+
+d = sqrt((y-y0).^2+(x-x0).^2);
+d2 = sqrt((rr-rr0).^2+(rt-rt0).^2+(rw-rw0).^2);
+
+scatter(d,d2.*sqrt(0.5))

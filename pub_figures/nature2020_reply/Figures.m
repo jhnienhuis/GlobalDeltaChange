@@ -132,28 +132,14 @@ table((1:6)',r',sp',rd',spd')
 
 %% Figure S1
 clr
+
 v1 = load('GlobalDeltaData_v1.mat','QRiver_dist','QRiver_prist','ee');
 
 land = v1.ee.net_aqua;
 change = v1.QRiver_dist./v1.QRiver_prist;
 
-edges = linspace(0,2,21);
-[xbin] = discretize(change,edges);
-ybin = accumarray(xbin(~isnan(xbin) & v1.QRiver_prist>10),land(~isnan(xbin) & v1.QRiver_prist>10),[],@(x) (trimmean(x,15)));
-
-subplot(1,2,1),
-scatter(edges(2:end)-0.05,ybin,40,'k','filled'), grid on, hold on
-scatter(edges(2)-0.05,-0.02,40,'k','filled'); text(edges(2)-0.02,-0.018,num2str(round(ybin(1),1)));
-scatter(change,land,1,[0.4 0.4 0.4],'filled')
-set(gca,'YLim',[-0.02 0.08]), box on, set(gca,'XLim',[0 2])
-plot([0 2],polyval(polyfit(change(change>edges(1)&change<edges(end)),land(change>edges(1)&change<edges(end)),1),[0 2]),'r');
-
-title('v1 Data')
-xlabel('Q_{dist}/Q_{prist}')
-ylabel('Land Area Change (km2/yr)')
-
 %raw data from paper:
-subplot(1,2,2)
+subplot(1,2,1),
 b = [-1.1E-2,3.9E-3,7.6E-3,9.9E-3,6.6E-3,5.1E-3,2.0E-4,4.4E-3,3.0E-3,1.0E-2,7.4E-3,1.2E-2,2.8E-2,1.5E-2,2.9E-2,2.5E-2,3.0E-2,2.6E-2,5.6E-2,3.3E-2];
 scatter(0.05:0.1:1.95,b,'k','filled'), hold on, grid on
 scatter(change,land,1,[0.4 0.4 0.4],'filled')
@@ -162,8 +148,33 @@ plot([0 2],[-0.013 0.037],'r');
 title('Published figure')
 xlabel('Q_{dist}/Q_{prist}')
 ylabel('Land Area Change (km2/yr)')
-saveas(gcf,'FigS1.fig')
-saveas(gcf,'FigS1.png')
+
+
+subplot(1,2,2)
+
+%idx yellow = 6302;
+
+edges = linspace(0,2,21);
+%change(6302) = NaN;
+[xbin] = discretize(change,edges);
+%ybin = accumarray(xbin(~isnan(xbin) & v1.QRiver_prist>10),land(~isnan(xbin) & v1.QRiver_prist>10),[],@(x) (trimmean(x,15)));
+
+ybin = accumarray(xbin(~isnan(xbin)),land(~isnan(xbin)),[],@(x) (mean(x)));
+ybin = max(-0.02,min(ybin,0.08));
+scatter(edges(2:end)-0.1,ybin,40,'k','filled'), grid on, hold on
+%scatter(edges(2)-0.1,-0.02,40,'k','filled'); text(edges(2)-0.02,-0.018,num2str(round(ybin(1),1)));
+scatter(change,land,1,[0.4 0.4 0.4],'filled')
+set(gca,'YLim',[-0.02 0.08]), box on, set(gca,'XLim',[0 2])
+plot([0 2],polyval(polyfit(change(change>edges(1)&change<edges(end)),land(change>edges(1)&change<edges(end)),1),[0 2]),'r');
+
+title('v1 Data')
+xlabel('Q_{dist}/Q_{prist}')
+ylabel('Land Area Change (km2/yr)')
+
+
+%saveas(gcf,'FigC1.fig')
+%saveas(gcf,'FigC1.svg')
+
 
 %% Figure S3
 clr
