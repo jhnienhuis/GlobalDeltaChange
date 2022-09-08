@@ -4,11 +4,7 @@ GlobalDeltaChange
 
 .. image:: https://zenodo.org/badge/191585237.svg
    :target: https://zenodo.org/badge/latestdoi/191585237
-   
-   
-.. image:: https://badge.fury.io/gh/jhnienhuis%2FGlobalDeltaChange.svg
-    :target: https://badge.fury.io/gh/jhnienhuis%2FGlobalDeltaChange
-
+    
 .. image:: https://app.codacy.com/project/badge/Grade/0ae4939efdcd43b9b70e3ac605619f50
     :target: https://www.codacy.com/gh/jhnienhuis/GlobalDeltaChange/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jhnienhuis/GlobalDeltaChange&amp;utm_campaign=Badge_Grade
     
