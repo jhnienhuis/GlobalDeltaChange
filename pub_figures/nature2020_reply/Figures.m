@@ -1,8 +1,8 @@
 %% Fig. 1
-addpath('D:\Dropbox\github\GlobalDeltaSeaLevel')
+addpath('D:\Drive\github\GlobalDeltaSeaLevel')
 v1 = load('GlobalDeltaData_v1.mat','QRiver_dist','QRiver_prist','ee');
-load('D:\Dropbox\github\GlobalDeltaChange\GlobalDeltaData.mat','BasinID2','delta_name','MouthLon');
-
+load('D:\Drive\github\GlobalDeltaChange\GlobalDeltaData.mat','BasinID2','delta_name','MouthLon');
+f = [gdrive filesep 'github' filesep 'GlobalDeltaChange' filesep];
 ed_BasinID2 = get_edmonds_data(BasinID2);
 ed_idx = ismember(BasinID2,ed_BasinID2);
 
@@ -50,7 +50,7 @@ set(gcf, 'Units', 'Inches', 'OuterPosition', [0, 0, 7, 3]);
 
 a(4) = subplot(2,3,4);
 %smaller buffer size:
-f = [dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep];
+
 fileID = fopen([f 'land_area_change' filesep 'GlobalDeltaChange_p50.csv'],'r');
 data = textscan(fileID, '%q%f%f%f%f%f%f%f%f%q%[^\n\r]', 'Delimiter', ',', 'HeaderLines' ,1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
 fclose(fileID);
@@ -71,7 +71,7 @@ title(["(d) 50% buffer size"])
 
 a(5) = subplot(2,3,5);
 %larger buffer size:
-f = [dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep];
+
 fileID = fopen([f 'land_area_change' filesep 'GlobalDeltaChange_p150.csv'],'r');
 data = textscan(fileID, '%q%f%f%f%f%f%f%f%f%q%[^\n\r]', 'Delimiter', ',', 'HeaderLines' ,1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
 fclose(fileID);
@@ -92,7 +92,7 @@ xlabel('Human-induced Sediment Flux Change (Q^d_{river} / Q^p_{river})')
 
 a(6) = subplot(2,3,6);
 %altered land cover mask #2:
-f = [dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep];
+
 fileID = fopen([f 'land_area_change' filesep 'GlobalDeltaChange_lc_c_w2.csv'],'r');
 data = textscan(fileID, '%q%f%f%f%f%f%f%f%f%q%[^\n\r]', 'Delimiter', ',', 'HeaderLines' ,1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
 fclose(fileID);
@@ -124,6 +124,7 @@ end
 
 saveas(gcf,'Fig1.png')
 saveas(gcf,'Fig1.fig')
+saveas(gcf,'Fig1.svg')
 
 %% Table S1
 

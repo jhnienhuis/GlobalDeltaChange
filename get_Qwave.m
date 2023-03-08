@@ -3,7 +3,7 @@ function get_Qwave
 %load global map of directional wave energy spectra
 load(['D:\OneDrive - Universiteit Utrecht\Waves\Software\DirMapGlo.mat'],'hs','energy','tp','wind')
 
-load([dropbox filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'],'MouthLon','MouthLat','BasinID2','delta_name','QRiver_prist');
+load([gdrive filesep 'github' filesep 'GlobalDeltaChange' filesep 'GlobalDeltaData.mat'],'MouthLon','MouthLat','BasinID2','delta_name','QRiver_prist');
 
 load('D:\OneDrive - Universiteit Utrecht\WorldCoastline\GlobalFetch\GlobalFetch.mat','FetchAll','lon','lat')
 

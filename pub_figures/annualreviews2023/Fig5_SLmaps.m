@@ -1,6 +1,6 @@
 %% global map
-%{
-f = ['D:\Drive\2022 DeltaSLR_AnnualRev\Data\anu_rsl\rsl.7.xyz'];
+
+f = [cd '\anu_rsl\rsl.7.xyz'];
 gunzip([f '.gz'])
 fid = fopen(f); 
 SL7 = textscan(fid,'%f %f %f'); 
@@ -15,7 +15,7 @@ F7 = scatteredInterpolant(SL7{1},SL7{2},SL7{3});
 RSL7 = F7(xx,yy)./7;
 sl_dif_8 = gray2ind(mat2gray(-RSL7,[-10 10]));
 
-f = ['D:\Drive\2022 DeltaSLR_AnnualRev\Data\rsl.11.xyz'];
+f = [cd '\anu_rsl\rsl.11.xyz'];
 gunzip([f '.gz'])
 fid = fopen(f); 
 SL8 = textscan(fid,'%f %f %f'); 
@@ -39,7 +39,7 @@ geoshow(ax, land, 'FaceColor', [0.9 0.9 0.9])
 nexttile
 ax = worldmap('World');
 map = flipud(cbrewer('div', 'RdYlBu', 64));
-g = geoshow(sl_dif_6,map,[1 90 0],'DisplayType','image');
+g = geoshow(sl_dif_8,map,[1 90 0],'DisplayType','image');
 land = shaperead('landareas.shp', 'UseGeoCoords', true);
 geoshow(ax, land, 'FaceColor', [0.9 0.9 0.9])
 
@@ -47,7 +47,7 @@ geoshow(ax, land, 'FaceColor', [0.9 0.9 0.9])
 nexttile
 ax = worldmap('World');
 map = flipud(cbrewer('div', 'RdYlBu', 64));
-load('D:\Drive\2022 DeltaSLR_AnnualRev\Data\gridded-SL-IPCC-AR6.mat','SL_245LC_2200_50')
+load('gridded-SL-IPCC-AR6.mat','SL_245LC_2200_50')
 
 sl_dif_future = (SL_245LC_2200_50)./200;
 sl_dif_future = gray2ind(mat2gray(sl_dif_future,[-10 10]));
