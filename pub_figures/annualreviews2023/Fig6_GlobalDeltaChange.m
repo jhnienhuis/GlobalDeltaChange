@@ -1,7 +1,7 @@
 clr
 load('D:\Drive\github\GlobalDeltaSeaLevel\export_data\GlobalDeltaSeaLevelData','DeltaSLR_SSPt','DeltaSLR_SSP126','DeltaSLR_SSP245','DeltaSLR_SSP585','DeltaSLR')
 load('D:\Drive\github\GlobalDeltaSeaLevel\export_data\GlobalDeltaProfile','s','r','bed_h')
-load('D:\Drive\github\GlobalDeltaSeaLevel\export_data\GlobalDeltaArea.mat','w','delta_area')
+load('D:\Drive\github\GlobalDeltaSeaLevel\export_data\GlobalDeltaArea.mat','delta_width','delta_area','src')
 load('D:\Drive\github\GlobalDeltaChange\GlobalDeltaData.mat','QRiver_dist','MouthLon','MouthLat','QTide','QWave','delta_name');
 load('D:\Drive\github\GlobalDeltaChange\land_area_change\GlobalDeltaData_AreaChange.mat','net_aqua');
 
@@ -14,13 +14,14 @@ ff = 365*24*3600/1600;
 fr = 0.9;
 
 %remove caspian sea and other non deltas and deltas > 10km2
-[~,idx] = func_delta_areachange(ff.*QRiver_dist,DeltaSLR_SSP126(:,1),s,r,w,bed_h,fr);
-idx= idx & ~(MouthLon>46 & MouthLon<56 & MouthLat>34 & MouthLat<48) & delta_area>1e7;
+idx = (~isnan(bed_h) & bed_h<0) & ~(MouthLon>46 & MouthLon<56 & MouthLat>34 & MouthLat<48) & delta_area>1e7 &src==1;
+
 
 for jj=2:length(m),
     slr = eval(m{jj});
+    dA = (ff.*QRiver_dist.*fr - (delta_width.*(s-r).*0.5.*(slr)))./-bed_h;
     
-    dA = func_delta_areachange(ff.*QRiver_dist,slr,s,r,w,bed_h,fr);
+    %dA = func_delta_areachange(ff.*QRiver_dist,slr,s,r,delta_width,bed_h,fr);
     dA(~idx) = nan;
     
     %Afut(jj,1:size(slr,2),:) = dA';
@@ -29,6 +30,9 @@ end
 idx = squeeze(~isnan(out.DeltaSLR_SSP126(1,:)));
 t = [1985 2015 2050 2100 2200 2300];
 out.Aobs = net_aqua'.*1e6;
+
+
+
 
 %% Map
 tiledlayout('flow')
