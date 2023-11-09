@@ -143,6 +143,7 @@ plotm([-70; -70+-10],[170;170],'Color',map(2,:),'LineWidth',2),
 plotm([-70; -70+20],[170;170],'Color',map(end,:),'LineWidth',2),
 plotm([-70; -70+10],[170;170],'Color',map(find(b>10,1),:),'LineWidth',2),
 
+%% projections
 nexttile
 
 ax = worldmap('World');

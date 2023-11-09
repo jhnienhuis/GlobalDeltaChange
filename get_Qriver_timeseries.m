@@ -1,9 +1,17 @@
-function [sed_series,discharge_series,t] = get_Qriver_timeseries(rm_lat,rm_lon,basinarea)
+clr
+load('D:\Drive\github\GlobalDeltaSeaLevel\export_data\GlobalDeltaProfile','bed_h')
+load('D:\Drive\github\GlobalDeltaSeaLevel\export_data\GlobalDeltaArea.mat','delta_area','src')
+load('D:\Drive\github\GlobalDeltaChange\GlobalDeltaData.mat','BasinID2','BasinArea','MouthLon','MouthLat','delta_name');
 
-rm_lon(rm_lon>180) = rm_lon(rm_lon>180)-360;
-%
-%colville
-%lena
+
+%remove caspian sea and other non deltas and deltas > 10km2
+idx = (~isnan(bed_h) & bed_h<0) & ~(MouthLon>46 & MouthLon<56 & MouthLat>34 & MouthLat<48) & delta_area>1e7 &src==1;
+
+MouthLat = MouthLat(idx)';
+MouthLon = MouthLon(idx)';
+
+MouthLon(MouthLon>180) = MouthLon(MouthLon>180)-360;
+
 a = geotiffread('D:\OneDrive - Universiteit Utrecht\WBMSed\bqart_sed-flow_dir\bqart_a.tif');
 a(a<0) = nan; a = flipud(a);
 d = matfile(['D:\OneDrive - Universiteit Utrecht\WBMSed\qs_timeseries']);
@@ -13,28 +21,59 @@ lon_grid = d.lon_grid;
 lat_grid = d.lat_grid;
 wbm_basinarea = a(sub2ind(size(a),wbm_lat,wbm_lon));
 
-delta_coor = rm_lat+1i.*rm_lon;
+delta_coor = MouthLat+1i.*MouthLon;
 wbm_coor = lat_grid(wbm_lat)+1i.*lon_grid(wbm_lon);
+
 blub = abs(wbm_coor-delta_coor) +...
-    (abs((wbm_basinarea-basinarea)./basinarea.*log10(basinarea)))+...
+    (abs((wbm_basinarea-BasinArea(idx)')./BasinArea(idx)'.*log10(BasinArea(idx)')))+...
     (abs(wbm_coor-delta_coor)>8).*10;
 
-[~,idx] = min(blub);
-fac = wbm_basinarea(idx)./basinarea;
+[~,idx2] = min(blub);
+fac = wbm_basinarea(idx2)./BasinArea(idx);
 %mackenzie = [459,1595], colville = [296,1605], lena=[3035,1632]
 
-sed_series = d.sed_series(:,idx).*fac;
-discharge_series = d.discharge_series(:,idx).*fac;
+discharge_series = d.discharge_series;
+discharge_series = discharge_series(:,idx2).*fac';
 
-t = d.t;
-[yr_t,~] = datevec(t);
 
-t_day = int64(t-datenum(yr_t,1,1))+1;
-t_day(t_day>366) = 366;
+Discharge50 = prctile(discharge_series,50,1)';
+Discharge90 = prctile(discharge_series,90,1)';
+Discharge99 = prctile(discharge_series,99,1)';
+Discharge999 = prctile(discharge_series,99.9,1)';
 
-%qs_day = double(accumarray(t_day,sed_series,[366 1],@mean));
-%discharge_day = double(accumarray(t_day,discharge_series,[366 1],@mean));
-%num_day_50pct = find(cumsum(sort(qs_day,'descend'))>(0.5*sum(qs_day)),1);
-%if isempty(num_day_50pct), num_day_50pct = nan; end
 
-end
+
+
+BasinID2 = BasinID2(idx);
+delta_name = delta_name(idx);
+
+
+t = table(BasinID2,delta_name,Discharge50,Discharge90,Discharge99,Discharge999);
+
+writetable(t,'GlobalDeltaDischargeExtremes.xlsx')
+
+
+
+%[yr_t,~] = datevec(d.t);
+%yr_t = yr_t-1979;
+%rm_lat = (d.rm_lat-900)./10;
+%mean annual maximum
+% pk = zeros(size(rm_lat));
+% m = zeros(size(rm_lat));
+% p10 = zeros(size(rm_lat));
+% p90 = zeros(size(rm_lat));
+% 
+% for idx=1:length(rm_lat)
+%     if rem(idx,100)==1, disp(idx),end
+%     x = d.discharge_series(:,idx);
+%     m(idx) = mean(x);
+%     pk(idx) = mean(accumarray(yr_t,x,[],@max));
+%     p10(idx) = mean(accumarray(yr_t,x,[],@(x) (prctile(x,10))));
+%     p90(idx) = mean(accumarray(yr_t,x,[],@(x) (prctile(x,90))));
+% end
+
+
+
+
+
+
