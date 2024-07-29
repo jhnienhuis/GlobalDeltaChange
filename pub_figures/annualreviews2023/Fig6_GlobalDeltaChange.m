@@ -19,7 +19,7 @@ idx = (~isnan(bed_h) & bed_h<0) & ~(MouthLon>46 & MouthLon<56 & MouthLat>34 & Mo
 
 for jj=2:length(m),
     slr = eval(m{jj});
-    dA = (ff.*QRiver_dist.*fr - (delta_width.*(s-r).*0.5.*(slr)))./-bed_h;
+    dA = (ff.*QRiver_dist.*fr - (delta_area.*slr))./-bed_h;
     
     %dA = func_delta_areachange(ff.*QRiver_dist,slr,s,r,delta_width,bed_h,fr);
     dA(~idx) = nan;

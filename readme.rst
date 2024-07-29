@@ -22,12 +22,57 @@ Versioning
 by Jaap Nienhuis, Utrecht University, 2019, version 1.0
 by Jaap Nienhuis, Utrecht University, 2021, version 2.0
 (Version 2.0 includes the newest land/water change data from GSW, local wave estimates from local wind fetch, submarine and subaerial elevation, river names, and more.)
+by Jaap Nienhuis, Utrecht University, 2022, version 3.0
+(Version 3.0 includes better delta slopes)
+by Jaap Nienhuis, Utrecht University, 2023, version 4.0
+(Version 4.0 includes better fluvial sediment flux data, including bedload fluxes from Cohen et al 2022 and modern suspended load values from Dethier et al)
 
 Use the data
 #############
 
-The data can be viewed interactively in `a GEE App <https://jhnienhuis.users.earthengine.app/view/globaldelta>`_.
+The data can be viewed interactively in `a arcGIS App <https://jhnienhuis.github.io/globaldeltas>`_.
 Raw data is available here on github, formatted as `MATLAB .mat <https://github.com/jhnienhuis/GlobalDeltaChange/blob/master/GlobalDeltaData.mat>`_, `Shapefiles <https://github.com/jhnienhuis/GlobalDeltaChange/blob/master/export_data/GlobalDeltaMouth_shp.zip>`_, `NetCDF .nc <https://github.com/jhnienhuis/GlobalDeltaChange/blob/master/export_data/GlobalDeltaData.nc>`_, and `.kml <https://github.com/jhnienhuis/GlobalDeltaChange/blob/master/export_data/GlobalDeltaData.kml>`_ files. 
+
+BasinArea: Drainage Basin Area (km2)
+BasinID: HydroSheds ID of the drainage basin
+BasinID2: HydroSheds ID of the drainage basin, with the last number added that specifies the continent
+BasinID_ATLAS: ID of the drainage basin of the HydroATLAS product
+channel_len: 30 point vector of each delta specifying the length to the next elevation (e.g., the 20th value represents to distance from the mouth to the 20 meter elevation contour)
+channel_len_lat: 30 point vector of each delta specifying the latitude of the delta channel (in decimal degrees)
+channel_len_lon: 30 point vector of each delta specifying the longitude of the delta channel (in decimal degrees)
+channel_slope: overall delta surface slope (in m/m)
+Continent: value from 1:8 specifying which continent the delta lies on
+delta_name: the delta name, not complete
+depth_mouth: channel depth at the river mouth (m)
+depth_upstream: channel depth at the delta apex (m)
+Discharge_dist: Modern river water discharge (m3/s)
+Discharge_prist: Pristine (non human modified) river water discharge (m3/s)
+Discharge_tide: Average tide-driven discharge at the river mouth (m3/s)
+Hs: Average offshore significant wave height (m)
+MouthLat: Latitude of the river mouth (decimal degrees)
+MouthLon: Longitude of the river mouth (decimal degrees)
+QRiver_bedload: Bedload sediment flux at the delta apex (kg/s)
+QRiver_dist: Modern suspended load sediment flux at the delta apex (kg/s)
+QRiver_prist: Pristine (non human modified) suspended load sediment flux at the delta apex (kg/s)
+QTide: Average tide-driven sediment flux at the river mouth (kg/s)
+QWave: Potential wave-driven sediment flux away from the river mouth (kg/s)
+Region: Number indicating a certain coastal region
+Region_str: Name of the Region
+RiverID_ATLAS: ID of the river from the RiverATLAS product
+shelf_depth: depth of the shelfbreak (m)
+shelf_len: 31 point vector of each delta specifying the length to the next shelf contour line (e.g., the 20th value represents to distance from the mouth to the 20th value in shelf_lines)
+shelf_len_lat: 31 point vector of each delta specifying the latitude of the delta steepest descent into the basin (in decimal degrees)
+shelf_len_lon: 31 point vector of each delta specifying the longitude of the delta steepest descent into the basin (in decimal degrees)
+shelf_lines: contour lines of the shelf
+shelf_slope: average slope of the continental shelf (m/m)
+shelf_width: distance to the shelf break (km)
+TidalAmp: Average tidal amplitude (m)
+Tp: Average wave period (s)
+wave_lat: latitude of the wave data
+wave_lon: longitude of the wave data
+width_mouth: channel width at the river mouth (m)
+width_upstream: channel width at the delta apex (m)
+
 
 Reproduce the data
 #############
@@ -125,11 +170,11 @@ For deltas on Madagascar, and additional deltas drawn at random from the dataset
 +===========+============+============+===========+=========+
 |           |            | Wave       | River     | Tide    |
 +-----------+------------+------------+-----------+---------+
-|           | Wave       | 244        |  011      | 033     |
+|           | Wave       | 241        |  012      | 033     |
 +-----------+------------+------------+-----------+---------+
-| Predicted | River      | 020        |  025      | 018     |
+| Predicted | River      | 024        |  024      | 018     |
 +-----------+------------+------------+-----------+---------+
-|           | Tide       | 003        |  001      | 017     |
+|           | Tide       | 002        |  001      | 017     |
 +-----------+------------+------------+-----------+---------+
 
 For individual predictions, we retrieve the following accuracies
@@ -137,8 +182,8 @@ For individual predictions, we retrieve the following accuracies
 ================    =======================
 Morphology          Prediction accuracy (%)
 ----------------    -----------------------
-Wave dominated               89%
-River dominated              65%
+Wave dominated               88%
+River dominated              63%
 Tide dominated               23%
 ================    =======================
 
@@ -148,9 +193,9 @@ Scaling up to the globe, we retrieve the following estimates for the global numb
 Morphology          Global number   Uncertainty (+/- 1std)
 ----------------    --------------  -----------------------
 All deltas            10848             0371
-Wave dominated        08245             0894 
-River dominated       01825             0633
-Tide dominated        00778             0601
+Wave dominated        08234             0990 
+River dominated       01840             0689
+Tide dominated        00774             0598
 ================    ==============  =======================
 
 The accuracy of our Aquamonitor-derived land area change estimats for global deltas is assessed by comparison against other models, and individual delta assessments.
@@ -166,6 +211,7 @@ Intermodel error        092%                092.16
 One delta (mean)        246%                245.80
 All deltas (SE)         103%                103.16 
 ================    ==============  =======================
+
 
 
 
